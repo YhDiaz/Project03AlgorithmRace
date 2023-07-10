@@ -70,108 +70,21 @@ vector<int> inverselyOrdered;
 
 void StartMessage(int*); //Eleccion de ordenamiento de datos
 void GenerateRanges(); //Generacion de rangos
+void InitializeAlgorithmsMap(); //Inicializacion del mapa de algoritmos
+void GenerateCommonDataSet(); //Sets de datos comunes
+void SelectionSort(vector<int>&); //Algoritmo 01: Selection Sort
+void BubbleSort(vector<int>&); //Algoritmo 02: Bubble Sort
+void InsertionSort(vector<int>&); //Algoritmo 03: Insertion Sort
 
-void GenerateCommonDataSet(/*vector<int>& ordered, vector<int>& inverselyOrdered*/)
+void ShellSort(vector<int>& set)
 {
-	cout << "\nGenerando...";
 	
-	int max = 0;
-	
-	if(race01Range > race02Range)
-	{
-		if(race01Range > race03Range)
-		{
-			max = race01Range;
-		}
-		else
-		{
-			max = race03Range;
-		}
-	}
-	else if(race02Range > race03Range)
-	{
-		max = race02Range;
-	}
-	else
-	{
-		max = race03Range;
-	}	
-	
-	for(int i = 0; i < max; i++)
-	{
-		ordered.push_back(i + 1);
-		inverselyOrdered.push_back(max - i);
-	}
-	
-	cout << "\nSet de datos generado";
 }
 
-void SelectionSort(vector<int>& arr)
-{
-	int n = arr.size();
-	
-	for(int i = 0; i < n ; ++i)
-	{
-		for(int j = i; j < n ; ++j)
-		{
-			if(arr[j] < arr[i])
-			{
-				int temp = arr[i];
-				arr[i] = arr[j];
-				arr[j] = temp;
-			}
-		}
-	}
-}
+auto ExecutionTime(int, vector<int> = ordered); //Tiempo de ejecucion del algoritmo
 
-double getResultFromAlg(vector<int>& arr, int option)
-{
-	time_t start, end;
-	double time_taken;
-	time(&start);
-	ios_base::sync_with_stdio(false);
-	
-	SelectionSort(arr);
-	time(&end);
-	time_taken = double(end - start);
-	return time_taken;
-}
 
-auto myFunction(int algorithm, vector<int> arr = ordered)
-{	
-	switch(algorithm)
-	{
-		case 1: //Selection Sort
-		{
-			auto start = high_resolution_clock::now();
-			SelectionSort(arr);
-			auto end = high_resolution_clock::now();
-			
-			return duration_cast<duration<double>>(end - start);
-		}
-			
-		default:
-		{
-			auto start = high_resolution_clock::now();
-			auto end = high_resolution_clock::now();
-			
-			return duration_cast<duration<double>>(end - end);
-		}	
-	}
-}
-
-void InitializeAlgorithmsMap()
-{
-	algorithms["Selection Sort"] = 1;
-	algorithms["Bubble Sort"] = 2;
-	algorithms["Insertion Sort"] = 3;
-	algorithms["Shell Sort"] = 4;
-	algorithms["Quick Sort"] = 5;
-	algorithms["Merge Sort"] = 6;
-	algorithms["Heap Sort"] = 7;
-}
-
-void Race01()
+/*void Race01()
 {
 	//Modo 1: Ordenado
 	
@@ -180,7 +93,7 @@ void Race01()
 	
 	for(int i = 0; i < numAlgorithms; i++)
 	{
-		auto time_taken = myFunction(i + 1);
+		auto time_taken = ExecutionTime(i + 1);
 		
 		//Agregar al map
 		results[i + 1] = time_taken.count();
@@ -223,23 +136,46 @@ void Race01()
 	}
 	
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
-}
+}*/
 
 int main(int argc, char* argv[])
 {
 	int option = 0;
-	
+	/*
 	StartMessage(&option);
 	GenerateRanges();
 	InitializeAlgorithmsMap();
-	
-	/*race01Range = 20;
-	race02Range = 15;
-	race03Range = 10;*/
-	
-	//GenerateCommonDataSet(ordered, inverselyOrdered);
 	GenerateCommonDataSet();
-	Race01();
+	*/
+	
+	/*for(int i = 100; i > 0; i--)
+	{
+		ordered.push_back(i);
+	}*/
+	
+	srand(time(NULL));
+	
+	for(int i = 0; i < 20; i++)
+	{
+		int num = rand() % 20 + 1;
+		ordered.push_back(num);
+	}
+	
+	for(const auto& i : ordered)
+	{
+		cout << i << endl;
+	}
+	
+	cout << "\n\nAlgoritmo...\n\n";
+	//BubbleSort(ordered);
+	InsertionSort(ordered);
+	
+	for(const auto& i : ordered)
+	{
+		cout << i << endl;
+	}
+	
+	//Race01();
 	
 	/*for(const auto& i : ordered)
 	{
@@ -284,11 +220,6 @@ int main(int argc, char* argv[])
 		cout << "MODO DESCENDENTE";
 	}
 	
-	vector<int> arr01;
-	//GenerateDataSet(arr01);
-	
-	//auto time_taken = myFunction(arr01);
-	//cout << "Execution time: " << time_taken.count() << " seconds" << endl;
 	return 0;
 
 	/*
@@ -362,5 +293,128 @@ void GenerateRanges()
 	race03Range = rand() % (7500 - 15000) + 7500;
 	
 	cout << "\n\tRangos:\n\t- Carrera 1: " << race01Range << "\n\t- Carrera 2: " << race02Range << "\n\t- Carrera 3: " << race03Range << endl;
+}
+
+//Inicializacion de los valores del mapa de algoritmos
+void InitializeAlgorithmsMap()
+{
+	algorithms["Selection Sort"] = 1;
+	algorithms["Bubble Sort"] = 2;
+	algorithms["Insertion Sort"] = 3;
+	algorithms["Shell Sort"] = 4;
+	algorithms["Quick Sort"] = 5;
+	algorithms["Merge Sort"] = 6;
+	algorithms["Heap Sort"] = 7;
+}
+
+//Generacion de sets de datos comunes: Set de datos comunes para todas las carreras
+void GenerateCommonDataSet()
+{
+	cout << "\nGenerando...";
+	
+	int max = 0;
+	
+	if(race01Range > race02Range)
+	{
+		if(race01Range > race03Range)
+		{
+			max = race01Range;
+		}
+		else
+		{
+			max = race03Range;
+		}
+	}
+	else if(race02Range > race03Range)
+	{
+		max = race02Range;
+	}
+	else
+	{
+		max = race03Range;
+	}	
+	
+	for(int i = 0; i < max; i++)
+	{
+		ordered.push_back(i + 1);
+		inverselyOrdered.push_back(max - i);
+	}
+	
+	cout << "\nSet de datos generado";
+}
+
+//Algoritmo01: Selection Sort
+void SelectionSort(vector<int>& set)
+{
+	for(int i = 0; i < set.size(); i++)
+	{
+		for(int j = i; j < set.size(); j++)
+		{
+			if(set[j] < set[i])
+			{
+				int temp = set[i];
+				set[i] = set[j];
+				set[j] = temp;
+			}
+		}
+	}
+}
+
+//Algoritmo 02: Bubble Sort
+void BubbleSort(vector<int>& set)
+{
+	for(int i = 1; i < set.size(); i++)
+	{
+		for(int j = 0; j < set.size() - i; j++)
+		{
+			if(set[j] > set[j + 1])
+			{
+				int temp = set[j];
+				set[j] = set[j + 1];
+				set[j + 1] = temp;
+			}
+		}
+	}
+}
+
+//Algoritmo 03: Insertion Sort
+void InsertionSort(vector<int>& set)
+{
+	for(int i = 0; i < set.size(); i++)
+	{
+		int j = i;
+		
+		while(j > 0 && set[j - 1] > set[j])
+		{
+			int temp = set[j];
+			set[j] = set[j - 1];
+			set[j - 1] = temp;
+			j--;
+		}
+	}	
+}
+
+//Tiempo de ejecucion: Calcula el tiempo que se demora el algoritmo en ordenar el arreglo
+auto ExecutionTime(int algorithm, vector<int> set)
+{	
+	switch(algorithm)
+	{
+		case 1: //Selection Sort
+		{
+			auto start = high_resolution_clock::now();
+			SelectionSort(set);
+			auto end = high_resolution_clock::now();
+			
+			return duration_cast<duration<double>>(end - start);
+		}
+			
+		default:
+		{
+			auto start = high_resolution_clock::now();
+			auto end = high_resolution_clock::now();
+			
+			return duration_cast<duration<double>>(end - end);
+		}	
+	}
 }
 
