@@ -78,8 +78,9 @@ void SelectionSort_Ascending(vector<int>&); //Algoritmo 01: Selection Sort (Orde
 void SelectionSort_Descending(vector<int>&); //Algoritmo 01: Selection Sort (Orden descendente)
 void BubbleSort_Ascending(vector<int>&); //Algoritmo 02: Bubble Sort (Orden ascendente)
 void BubbleSort_Descending(vector<int>&); //Algoritmo 02: Bubble Sort (Orden descendente)
+void InsertionSort_Ascending(vector<int>&); //Algoritmo 03: Insertion Sort (Orden ascendente)
+void InsertionSort_Descending(vector<int>&); //Algoritmo 03: Insertion Sort (Orden ascendente)
 
-void InsertionSort(vector<int>&); //Algoritmo 03: Insertion Sort
 int ShellSort_KnuthGap(int); //Secuencia de Knuth para el algoritmo 04
 void ShellSort(vector<int>&); //Algoritmo 04: Shell Sort
 
@@ -143,7 +144,7 @@ void HeapSort(vector<int>& set)
 }
 
 auto ExecutionTime(int, vector<int> = ordered); //Tiempo de ejecucion del algoritmo
-void Race01();
+void Race01(); //Carrera 01: Tablero de puntaje
 
 int main(int argc, char* argv[])
 {
@@ -192,7 +193,8 @@ void TestFunction()
 	//SelectionSort_Descending(ordered);
 	//BubbleSort_Ascending(ordered);
 	//BubbleSort_Descending(ordered);
-	//InsertionSort(ordered);
+	//InsertionSort_Ascending(ordered);
+	//InsertionSort_Descending(ordered);
 	//ShellSort(ordered);
 	//mergeSort(ordered, 0, ordered.size());
 	//vector<int> receptor = MergeSort(ordered);
@@ -357,14 +359,31 @@ void BubbleSort_Descending(vector<int>& set)
 	}
 }
 
-//Algoritmo 03: Insertion Sort
-void InsertionSort(vector<int>& set)
+//Algoritmo 03: Insertion Sort (Orden ascendente)
+void InsertionSort_Ascending(vector<int>& set)
 {
 	for(int i = 0; i < set.size(); i++)
 	{
 		int j = i;
 		
 		while(j > 0 && set[j - 1] > set[j])
+		{
+			int temp = set[j];
+			set[j] = set[j - 1];
+			set[j - 1] = temp;
+			j--;
+		}
+	}	
+}
+
+//Algoritmo 03: Insertion Sort (Orden descendente)
+void InsertionSort_Descending(vector<int>& set)
+{
+	for(int i = 0; i < set.size(); i++)
+	{
+		int j = i;
+		
+		while(j > 0 && set[j - 1] < set[j])
 		{
 			int temp = set[j];
 			set[j] = set[j - 1];
@@ -439,7 +458,7 @@ auto ExecutionTime(int algorithm, vector<int> set)
 		case 3: //Insertion Sort
 		{
 			auto start = high_resolution_clock::now();
-			InsertionSort(set);
+			//InsertionSort(set);
 			auto end = high_resolution_clock::now();
 			
 			return duration_cast<duration<double>>(end - start);
