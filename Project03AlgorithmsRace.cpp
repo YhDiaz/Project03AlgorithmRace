@@ -162,7 +162,8 @@ int main(int argc, char* argv[])
 	*/
 	StartMessage();
 	InitializeAlgorithmsMap();
-	TestFunction();
+	//TestFunction();
+	GenerateCommonDataSet();
 	
 	Races();
 	/*Race01();
@@ -253,12 +254,23 @@ void GenerateCommonDataSet()
 	else
 	{
 		max = race03Range;
-	}	
+	}
 	
-	for(int i = 0; i < max; i++)
+	if(order == 1) //Generacion de los sets si el orden elegido es ascendente
 	{
-		ordered.push_back(i + 1);
-		inverselyOrdered.push_back(max - i);
+		for(int i = 0; i < max; i++)
+		{
+			ordered.push_back(i + 1);
+			inverselyOrdered.push_back(max - i);
+		}
+	}
+	else //Generacion de los sets si el orden elegido es descendente
+	{
+		for(int i = 0; i < max; i++)
+		{
+			ordered.push_back(max - i);
+			inverselyOrdered.push_back(i + 1);
+		}
 	}
 	
 	cout << "\nSet de datos generado";
@@ -474,8 +486,7 @@ auto ExecutionTime_Ascending(int algorithm, vector<int>& set)
 			
 		default:
 		{
-			auto time = high_resolution_clock::now();
-			
+			auto time = high_resolution_clock::now();			
 			return duration_cast<duration<double>>(time - time);
 		}
 	}
@@ -524,8 +535,7 @@ auto ExecutionTime_Descending(int algorithm, vector<int>& set)
 			
 		default:
 		{
-			auto time = high_resolution_clock::now();
-			
+			auto time = high_resolution_clock::now();			
 			return duration_cast<duration<double>>(time - time);
 		}
 	}
@@ -544,6 +554,7 @@ auto ExecutionTime(int algorithm, vector<int>& set)
 	}	
 }
 
+//Carrera 01: Tablero de puntaje
 void Race01()
 {
 	//Modo 1: Ordenado
@@ -596,11 +607,29 @@ void Race01()
 	}
 	
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
+	
+	//Modo 2: Inversamente ordenado
+	
+	//Modo 3: Aleatorios unicos
+	
+	//Modo 4: Aleatorios duplicados
+}
+
+void Race02()
+{
+	
+}
+
+void Race03()
+{
+	
 }
 
 void Races()
 {
-	Race01();
+	Race01(); //Carrera por el tablero
+	Race02(); //Carrera por la determinacion de caminos
+	Race03(); //Carrera por el renderizado
 }
 
 //Funcion de pruebas
