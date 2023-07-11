@@ -80,10 +80,11 @@ void SelectionSort_Descending(vector<int>&); //Algoritmo 01: Selection Sort (Ord
 void BubbleSort_Ascending(vector<int>&); //Algoritmo 02: Bubble Sort (Orden ascendente)
 void BubbleSort_Descending(vector<int>&); //Algoritmo 02: Bubble Sort (Orden descendente)
 void InsertionSort_Ascending(vector<int>&); //Algoritmo 03: Insertion Sort (Orden ascendente)
-void InsertionSort_Descending(vector<int>&); //Algoritmo 03: Insertion Sort (Orden ascendente)
+void InsertionSort_Descending(vector<int>&); //Algoritmo 03: Insertion Sort (Orden descendente)
 
 int ShellSort_KnuthGap(int); //Secuencia de Knuth para el algoritmo 04
-void ShellSort(vector<int>&); //Algoritmo 04: Shell Sort
+void ShellSort_Ascending(vector<int>&); //Algoritmo 04: Shell Sort (Orden ascendente)
+void ShellSort_Descending(vector<int>&); //Algoritmo 04: Shell Sort (Orden descendente)
 
 vector<int> MergeSort_Merge(vector<int> left, vector<int> right)
 {
@@ -378,8 +379,8 @@ int ShellSort_KnuthGap(int size)
 	return gap;
 }
 
-//Algoritmo 04: Shell Sort
-void ShellSort(vector<int>& set)
+//Algoritmo 04: Shell Sort (Orden ascendente)
+void ShellSort_Ascending(vector<int>& set)
 {
 	int size = set.size();
 	int gap = ShellSort_KnuthGap(size);
@@ -392,6 +393,32 @@ void ShellSort(vector<int>& set)
 			int j = i;
 			
 			while(j >= gap && set[j - gap] > temp)
+			{
+				set[j] = set[j - gap];
+				j -= gap;
+			}
+			
+			set[j] = temp;
+		}
+		
+		gap = ShellSort_KnuthGap(gap);
+	}
+}
+
+//Algoritmo 04: Shell Sort (Orden descendente)
+void ShellSort_Descending(vector<int>& set)
+{
+	int size = set.size();
+	int gap = ShellSort_KnuthGap(size);
+	
+	while(gap > 0)
+	{
+		for(int i = gap; i < size; i++)
+		{
+			int temp = set[i];
+			int j = i;
+			
+			while(j >= gap && set[j - gap] < temp)
 			{
 				set[j] = set[j - gap];
 				j -= gap;
@@ -439,7 +466,7 @@ auto ExecutionTime_Ascending(int algorithm, vector<int>& set)
 		case 4: //Shell Sort
 		{
 			auto start = high_resolution_clock::now();
-			//ShellSort_Ascending(set);
+			ShellSort_Ascending(set);
 			auto end = high_resolution_clock::now();
 			
 			return duration_cast<duration<double>>(end - start);
@@ -489,7 +516,7 @@ auto ExecutionTime_Descending(int algorithm, vector<int>& set)
 		case 4: //Shell Sort
 		{
 			auto start = high_resolution_clock::now();
-			//ShellSort_Descending(set);
+			ShellSort_Descending(set);
 			auto end = high_resolution_clock::now();
 			
 			return duration_cast<duration<double>>(end - start);
