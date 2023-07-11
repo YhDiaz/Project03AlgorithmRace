@@ -68,75 +68,81 @@ unordered_map<string, int> algorithms;
 vector<int> ordered;
 vector<int> inverselyOrdered;
 
+void TestFunction();
+
 void StartMessage(int*); //Eleccion de ordenamiento de datos
 void GenerateRanges(); //Generacion de rangos
 void InitializeAlgorithmsMap(); //Inicializacion del mapa de algoritmos
 void GenerateCommonDataSet(); //Sets de datos comunes
-void SelectionSort(vector<int>&); //Algoritmo 01: Selection Sort
+//void SelectionSort(vector<int>&); //Algoritmo 01: Selection Sort
+void SelectionSort_Ascending(vector<int>&);
+void SelectionSort_Descending(vector<int>&);
 void BubbleSort(vector<int>&); //Algoritmo 02: Bubble Sort
 void InsertionSort(vector<int>&); //Algoritmo 03: Insertion Sort
+int ShellSort_KnuthGap(int); //Secuencia de Knuth para el algoritmo 04
+void ShellSort(vector<int>&); //Algoritmo 04: Shell Sort
 
-void ShellSort(vector<int>& set)
+vector<int> MergeSort_Merge(vector<int> left, vector<int> right)
+{
+	vector<int> merged;
+	
+	while(!left.empty() && !right.empty())
+	{
+		if(left[0] <= right[0])
+		{
+			merged.push_back(left[0]);
+			left.erase(left.begin());
+		}
+		else
+		{
+			merged.push_back(right[0]);
+			right.erase(right.begin());
+		}
+	}
+	
+	for(const auto& val : left)
+	{
+		merged.push_back(val);
+	}
+	
+	for(const auto& val : right)
+	{
+		merged.push_back(val);
+	}
+	
+	return merged;
+}
+
+vector<int> MergeSort(vector<int>& set)
+{
+	if(set.size() <= 1)
+	{
+		return set;
+	}
+	
+	int mid = set.size() / 2;
+	
+	vector<int> leftHalf, rightHalf;
+	leftHalf.assign(set.begin(), set.begin() + mid);
+	rightHalf.assign(set.end() - mid, set.end());	
+	
+	vector<int> left = MergeSort(leftHalf);
+	vector<int> right = MergeSort(rightHalf);
+	return MergeSort_Merge(left, right);
+}
+
+void QuickSort(vector<int>& set)
+{
+	
+}
+
+void HeapSort(vector<int>& set)
 {
 	
 }
 
 auto ExecutionTime(int, vector<int> = ordered); //Tiempo de ejecucion del algoritmo
-
-
-/*void Race01()
-{
-	//Modo 1: Ordenado
-	
-	//AGREGAR UN MAP NumAlgorithm (Key) --- Time (Value)
-	unordered_map<int, double> results;
-	
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		auto time_taken = ExecutionTime(i + 1);
-		
-		//Agregar al map
-		results[i + 1] = time_taken.count();
-	}
-	
-	int place = 1;
-	double winnerTime = 0;
-	string winnerName;
-	
-	cout << "\nCarrera por el tablero: Modo ordenado" << endl;
-	
-	//Recorrer el map y mostrar los datos
-	for(const auto& pairRes : results)
-	{
-		string algorithmName;
-		double time = pairRes.second;
-		
-		for(const auto& pairAlg : algorithms)
-		{
-			if(pairRes.first == pairAlg.second)
-			{
-				algorithmName = pairAlg.first;
-			}
-		}
-		
-		cout << place << ". " << algorithmName << ", " << time << endl;
-		
-		if(winnerTime == 0)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-		else if(winnerTime > time)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-		
-		place++;
-	}
-	
-	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
-}*/
+void Race01();
 
 int main(int argc, char* argv[])
 {
@@ -145,71 +151,11 @@ int main(int argc, char* argv[])
 	StartMessage(&option);
 	GenerateRanges();
 	InitializeAlgorithmsMap();
-	GenerateCommonDataSet();
+	GenerateCommonDataSet();	
 	*/
-	
-	/*for(int i = 100; i > 0; i--)
-	{
-		ordered.push_back(i);
-	}*/
-	
-	srand(time(NULL));
-	
-	for(int i = 0; i < 20; i++)
-	{
-		int num = rand() % 20 + 1;
-		ordered.push_back(num);
-	}
-	
-	for(const auto& i : ordered)
-	{
-		cout << i << endl;
-	}
-	
-	cout << "\n\nAlgoritmo...\n\n";
-	//BubbleSort(ordered);
-	InsertionSort(ordered);
-	
-	for(const auto& i : ordered)
-	{
-		cout << i << endl;
-	}
-	
-	//Race01();
-	
-	/*for(const auto& i : ordered)
-	{
-		cout << i << endl;
-	}
-	
-	for(const auto& i : inverselyOrdered)
-	{
-		cout << i << endl;
-	}
-	
-	vector<int> arr1Ord;
-	vector<int> arr1Inv;
-	vector<int> arr2Ord;
-	vector<int> arr2Inv;
-	
-	arr1Ord.assign(ordered.begin(), ordered.begin() + race02Range);
-	arr2Ord.assign(ordered.begin(), ordered.begin() + race03Range);
-	arr1Inv.assign(ordered.end() - race02Range, ordered.end());
-	arr2Inv.assign(ordered.end() - race03Range, ordered.end());
-	
-	cout << "\nArreglo 2 ordenado:\n";
-	
-	for(const auto& i : arr1Inv)
-	{
-		cout << i << endl;
-	}
-	
-	cout << "\nArreglo 3 ordenado:\n";
-	
-	for(const auto& i : arr2Inv)
-	{
-		cout << i << endl;
-	}*/
+	InitializeAlgorithmsMap();
+	TestFunction();
+	/*Race01();
 	
 	if(option == 1)
 	{
@@ -218,50 +164,48 @@ int main(int argc, char* argv[])
 	else
 	{
 		cout << "MODO DESCENDENTE";
-	}
+	}*/
 	
 	return 0;
-
-	/*
-	cout << "Generando set de datos: " << endl;
-	
-	for(int i = 0; i < amount ; ++i)
-	{
-		arrSorted.push_back(i+1);
-		arrReverse.push_back(amount-i);
-		
-		if ( i == 0 )
-		{
-			random_value = 1 + rand() % (amount);
-			arr.push_back(random_value);
-		}
-		else
-		{
-			random_value = 1 + rand() % (amount);
-			arr.push_back(random_value);
-		}
-	}
-		
-	unordered_map<string, double> results;
-	results["SeleciontSort"] = getResultFromAlg(arr);
-	vector<int> arr1,arr2;
-	arr1.assign(arr.begin(), arr.end());
-	arr2.assign(arr.begin(), arr.end());
-	
-	int id = 1;
-	
-	for(const auto& pair : results)
-	{
-		const string& key = pair.first;
-		double value = pair.second;
-		cout << id << ". " << key << ", " << fixed << value << setprecision(5)
-		<< endl;
-		id++;
-	}
-	
-	return 0;
-	*/
 }
+
+
+
+void TestFunction()
+{
+	srand(time(NULL));
+	/*
+	for(int i = 0; i < 20000; i++)
+	{
+		int num = rand() % 20 + 1;
+		ordered.push_back(num);
+	}*/
+	
+	for(int i = 0; i < 20; i++)
+	{
+		int num = rand() % 20 + 1;
+		ordered.push_back(num);
+	}
+	
+	cout << "\n\nAlgoritmo...\n\n";
+	SelectionSort_Descending(ordered);
+	//BubbleSort(ordered);
+	//InsertionSort(ordered);
+	//ShellSort(ordered);
+	//mergeSort(ordered, 0, ordered.size());
+	//vector<int> receptor = MergeSort(ordered);
+	
+	/*for(const auto& i : receptor)
+	{
+		cout << i << endl;
+	}*/
+	
+	for(const auto& i : ordered)
+	{
+		cout << i << endl;
+	}
+}
+
 
 //Mensaje de inicio: El usuario decide si desea que el orden de los sets de datos sea ascendente o descendente
 void StartMessage(int* option)
@@ -343,14 +287,31 @@ void GenerateCommonDataSet()
 	cout << "\nSet de datos generado";
 }
 
-//Algoritmo01: Selection Sort
-void SelectionSort(vector<int>& set)
+//Algoritmo 01: Selection Sort (Orden ascendente)
+void SelectionSort_Ascending(vector<int>& set)
 {
 	for(int i = 0; i < set.size(); i++)
 	{
 		for(int j = i; j < set.size(); j++)
 		{
 			if(set[j] < set[i])
+			{
+				int temp = set[i];
+				set[i] = set[j];
+				set[j] = temp;
+			}
+		}
+	}
+}
+
+//Algoritmo 01: Selection Sort (Orden descendente)
+void SelectionSort_Descending(vector<int>& set)
+{
+	for(int i = 0; i < set.size(); i++)
+	{
+		for(int j = i; j < set.size(); j++)
+		{
+			if(set[j] > set[i])
 			{
 				int temp = set[i];
 				set[i] = set[j];
@@ -394,15 +355,81 @@ void InsertionSort(vector<int>& set)
 	}	
 }
 
+//Secuencia de Knuth (Algoritmo 04: Shell Sort)
+int ShellSort_KnuthGap(int size)
+{
+	int gap = 0;
+	
+	while((3 * gap) + 1 < size)
+	{
+		gap = (3 * gap) + 1;
+	}
+	
+	return gap;
+}
+
+//Algoritmo 04: Shell Sort
+void ShellSort(vector<int>& set)
+{
+	int size = set.size();
+	int gap = ShellSort_KnuthGap(size);
+	
+	while(gap > 0)
+	{
+		for(int i = gap; i < size; i++)
+		{
+			int temp = set[i];
+			int j = i;
+			
+			while(j >= gap && set[j - gap] > temp)
+			{
+				set[j] = set[j - gap];
+				j -= gap;
+			}
+			
+			set[j] = temp;
+		}
+		
+		gap = ShellSort_KnuthGap(gap);
+	}
+}
+
 //Tiempo de ejecucion: Calcula el tiempo que se demora el algoritmo en ordenar el arreglo
 auto ExecutionTime(int algorithm, vector<int> set)
-{	
+{
 	switch(algorithm)
 	{
 		case 1: //Selection Sort
 		{
 			auto start = high_resolution_clock::now();
-			SelectionSort(set);
+			//SelectionSort(set);
+			auto end = high_resolution_clock::now();
+			
+			return duration_cast<duration<double>>(end - start);
+		}			
+		
+		case 2: //Bubble Sort
+		{
+			auto start = high_resolution_clock::now();
+			BubbleSort(set);
+			auto end = high_resolution_clock::now();
+			
+			return duration_cast<duration<double>>(end - start);
+		}
+		
+		case 3: //Insertion Sort
+		{
+			auto start = high_resolution_clock::now();
+			InsertionSort(set);
+			auto end = high_resolution_clock::now();
+			
+			return duration_cast<duration<double>>(end - start);
+		}
+		
+		case 4: //Shell Sort
+		{
+			auto start = high_resolution_clock::now();
+			ShellSort(set);
 			auto end = high_resolution_clock::now();
 			
 			return duration_cast<duration<double>>(end - start);
@@ -414,7 +441,61 @@ auto ExecutionTime(int algorithm, vector<int> set)
 			auto end = high_resolution_clock::now();
 			
 			return duration_cast<duration<double>>(end - end);
-		}	
+		}
+	}	
+}
+
+void Race01()
+{
+	//Modo 1: Ordenado
+	
+	//AGREGAR UN MAP NumAlgorithm (Key) --- Time (Value)
+	unordered_map<int, double> results;
+	
+	for(int i = 0; i < numAlgorithms; i++)
+	{
+		auto time_taken = ExecutionTime(i + 1);
+		
+		//Agregar al map
+		results[i + 1] = time_taken.count();
 	}
+	
+	int place = 1;
+	double winnerTime = 0;
+	string winnerName;
+	
+	cout << "\nCarrera por el tablero: Modo ordenado" << endl;
+	
+	//Recorrer el map y mostrar los datos
+	for(const auto& pairRes : results)
+	{
+		string algorithmName;
+		double time = pairRes.second;
+		
+		for(const auto& pairAlg : algorithms)
+		{
+			if(pairRes.first == pairAlg.second)
+			{
+				algorithmName = pairAlg.first;
+			}
+		}
+		
+		cout << place << ". " << algorithmName << ", " << time << endl;
+		
+		if(winnerTime == 0)
+		{
+			winnerName = algorithmName;
+			winnerTime = time;
+		}
+		else if(winnerTime > time)
+		{
+			winnerName = algorithmName;
+			winnerTime = time;
+		}
+		
+		place++;
+	}
+	
+	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
 }
 
