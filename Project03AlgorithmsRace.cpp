@@ -64,13 +64,14 @@ int race02Range = 0;
 int race03Range = 0;
 int numAlgorithms = 7;
 unordered_map<string, int> algorithms;
+int order = 0; //1: Ascendente; 2: Descendente
 
 vector<int> ordered;
 vector<int> inverselyOrdered;
 
 void TestFunction();
 
-void StartMessage(int*); //Eleccion de ordenamiento de datos
+void StartMessage(); //Eleccion de ordenamiento de datos
 void GenerateRanges(); //Generacion de rangos
 void InitializeAlgorithmsMap(); //Inicializacion del mapa de algoritmos
 void GenerateCommonDataSet(); //Sets de datos comunes
@@ -143,23 +144,29 @@ void HeapSort(vector<int>& set)
 	
 }
 
-auto ExecutionTime(int, vector<int> = ordered); //Tiempo de ejecucion del algoritmo
+
+auto ExecutionTime_Ascending(int, vector<int>&); //Tiempo de ejecucion (Orden ascendente)
+auto ExecutionTime_Descending(int, vector<int>&); //Tiempo de ejecucion (Orden descendente)
+auto ExecutionTime(int, vector<int>& = ordered); //Tiempo de ejecucion del algoritmo
 void Race01(); //Carrera 01: Tablero de puntaje
+void Races(); //Carreras
 
 int main(int argc, char* argv[])
 {
-	int option = 0;
 	/*
-	StartMessage(&option);
+	StartMessage();
 	GenerateRanges();
 	InitializeAlgorithmsMap();
 	GenerateCommonDataSet();	
 	*/
+	StartMessage();
 	InitializeAlgorithmsMap();
 	TestFunction();
+	
+	Races();
 	/*Race01();
 	
-	if(option == 1)
+	if(order == 1)
 	{
 		cout << "MODO ASCENDENTE";
 	}
@@ -171,59 +178,20 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-//Funcion de pruebas
-void TestFunction()
-{
-	srand(time(NULL));
-	/*
-	for(int i = 0; i < 20000; i++)
-	{
-		int num = rand() % 20 + 1;
-		ordered.push_back(num);
-	}*/
-	
-	for(int i = 0; i < 20; i++)
-	{
-		int num = rand() % 20 + 1;
-		ordered.push_back(num);
-	}
-	
-	cout << "\n\nAlgoritmo...\n\n";
-	//SelectionSort_Ascending(ordered);
-	//SelectionSort_Descending(ordered);
-	//BubbleSort_Ascending(ordered);
-	//BubbleSort_Descending(ordered);
-	//InsertionSort_Ascending(ordered);
-	//InsertionSort_Descending(ordered);
-	//ShellSort(ordered);
-	//mergeSort(ordered, 0, ordered.size());
-	//vector<int> receptor = MergeSort(ordered);
-	
-	/*for(const auto& i : receptor)
-	{
-		cout << i << endl;
-	}*/
-	
-	for(const auto& i : ordered)
-	{
-		cout << i << endl;
-	}
-}
-
 //Mensaje de inicio: El usuario decide si desea que el orden de los sets de datos sea ascendente o descendente
-void StartMessage(int* option)
+void StartMessage()
 {
 	do
 	{
 		cout << "Carreras de algoritmos\n1. Ascendente.\n2. Descendente\nOpcion elegida: ";
-		cin >> *option;
+		cin >> order;
 		
-		if(*option != 1 && *option != 2)
+		if(order != 1 && order != 2)
 		{
 			cout << "\n\t* Error *\n" << endl;
 		}
 	}
-	while(*option != 1 && *option != 2);	
+	while(order != 1 && order != 2);	
 }
 
 //Generacion de rangos: Se generan los rangos de datos que tendra cada carrera
@@ -238,6 +206,10 @@ void GenerateRanges()
 	race01Range = rand() % (100000 - 90000) + 90000;
 	race02Range = rand() % (70000 - 50000) + 50000;
 	race03Range = rand() % (7500 - 15000) + 7500;
+	
+	race01Range = 20;
+	race02Range = 15;
+	race03Range = 10;
 	
 	cout << "\n\tRangos:\n\t- Carrera 1: " << race01Range << "\n\t- Carrera 2: " << race02Range << "\n\t- Carrera 3: " << race03Range << endl;
 }
@@ -432,15 +404,15 @@ void ShellSort(vector<int>& set)
 	}
 }
 
-//Tiempo de ejecucion: Calcula el tiempo que se demora el algoritmo en ordenar el arreglo
-auto ExecutionTime(int algorithm, vector<int> set)
+//Tiempo de ejecucion (Orden ascendente)
+auto ExecutionTime_Ascending(int algorithm, vector<int>& set)
 {
 	switch(algorithm)
 	{
 		case 1: //Selection Sort
 		{
 			auto start = high_resolution_clock::now();
-			//SelectionSort(set);
+			SelectionSort_Ascending(set);
 			auto end = high_resolution_clock::now();
 			
 			return duration_cast<duration<double>>(end - start);
@@ -449,7 +421,7 @@ auto ExecutionTime(int algorithm, vector<int> set)
 		case 2: //Bubble Sort
 		{
 			auto start = high_resolution_clock::now();
-			//BubbleSort(set);
+			BubbleSort_Ascending(set);
 			auto end = high_resolution_clock::now();
 			
 			return duration_cast<duration<double>>(end - start);
@@ -458,7 +430,7 @@ auto ExecutionTime(int algorithm, vector<int> set)
 		case 3: //Insertion Sort
 		{
 			auto start = high_resolution_clock::now();
-			//InsertionSort(set);
+			InsertionSort_Ascending(set);
 			auto end = high_resolution_clock::now();
 			
 			return duration_cast<duration<double>>(end - start);
@@ -467,7 +439,7 @@ auto ExecutionTime(int algorithm, vector<int> set)
 		case 4: //Shell Sort
 		{
 			auto start = high_resolution_clock::now();
-			ShellSort(set);
+			//ShellSort_Ascending(set);
 			auto end = high_resolution_clock::now();
 			
 			return duration_cast<duration<double>>(end - start);
@@ -475,11 +447,73 @@ auto ExecutionTime(int algorithm, vector<int> set)
 			
 		default:
 		{
+			auto time = high_resolution_clock::now();
+			
+			return duration_cast<duration<double>>(time - time);
+		}
+	}
+}
+
+//Tiempo de ejecucion (Orden descendente)
+auto ExecutionTime_Descending(int algorithm, vector<int>& set)
+{
+	switch(algorithm)
+	{
+		case 1: //Selection Sort
+		{
 			auto start = high_resolution_clock::now();
+			SelectionSort_Descending(set);
 			auto end = high_resolution_clock::now();
 			
-			return duration_cast<duration<double>>(end - end);
+			return duration_cast<duration<double>>(end - start);
+		}			
+		
+		case 2: //Bubble Sort
+		{
+			auto start = high_resolution_clock::now();
+			BubbleSort_Descending(set);
+			auto end = high_resolution_clock::now();
+			
+			return duration_cast<duration<double>>(end - start);
 		}
+		
+		case 3: //Insertion Sort
+		{
+			auto start = high_resolution_clock::now();
+			InsertionSort_Descending(set);
+			auto end = high_resolution_clock::now();
+			
+			return duration_cast<duration<double>>(end - start);
+		}
+		
+		case 4: //Shell Sort
+		{
+			auto start = high_resolution_clock::now();
+			//ShellSort_Descending(set);
+			auto end = high_resolution_clock::now();
+			
+			return duration_cast<duration<double>>(end - start);
+		}
+			
+		default:
+		{
+			auto time = high_resolution_clock::now();
+			
+			return duration_cast<duration<double>>(time - time);
+		}
+	}
+}
+
+//Tiempo de ejecucion: Calcula el tiempo que se demora el algoritmo en ordenar el arreglo
+auto ExecutionTime(int algorithm, vector<int>& set)
+{
+	if(order == 1)
+	{
+		return ExecutionTime_Ascending(algorithm, set);
+	}
+	else
+	{
+		return ExecutionTime_Descending(algorithm, set);
 	}	
 }
 
@@ -535,5 +569,62 @@ void Race01()
 	}
 	
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
+}
+
+void Races()
+{
+	Race01();
+}
+
+//Funcion de pruebas
+void TestFunction()
+{
+	srand(time(NULL));
+	vector<int> random;
+	/*
+	for(int i = 0; i < 20000; i++)
+	{
+		int num = rand() % 20 + 1;
+		ordered.push_back(num);
+	}*/
+	
+	for(int i = 0; i < 20; i++)
+	{
+		int num = rand() % 20 + 1;
+		random.push_back(num);
+	}
+	
+	cout << "\n\nAlgoritmo...\n\n";
+	//SelectionSort_Ascending(ordered);
+	//SelectionSort_Descending(ordered);
+	//BubbleSort_Ascending(ordered);
+	//BubbleSort_Descending(ordered);
+	//InsertionSort_Ascending(ordered);
+	//InsertionSort_Descending(ordered);
+	//ShellSort(ordered);
+	//mergeSort(ordered, 0, ordered.size());
+	//vector<int> receptor = MergeSort(ordered);
+	
+	/*for(const auto& i : receptor)
+	{
+		cout << i << endl;
+	}*/
+	
+	for(int i = 0; i < 4; i++)
+	{
+		vector<int> randomCopy = random;
+		auto time = ExecutionTime(i + 1, randomCopy);
+		
+		cout << "\nAlgoritmo " << i + 1 << endl;
+		for(const auto& i : randomCopy)
+		{
+			cout << i << endl;
+		}
+	}	
+	
+	for(const auto& i : ordered)
+	{
+		cout << i << endl;
+	}
 }
 
