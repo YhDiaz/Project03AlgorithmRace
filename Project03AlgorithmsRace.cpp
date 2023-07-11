@@ -74,10 +74,11 @@ void StartMessage(int*); //Eleccion de ordenamiento de datos
 void GenerateRanges(); //Generacion de rangos
 void InitializeAlgorithmsMap(); //Inicializacion del mapa de algoritmos
 void GenerateCommonDataSet(); //Sets de datos comunes
-//void SelectionSort(vector<int>&); //Algoritmo 01: Selection Sort
-void SelectionSort_Ascending(vector<int>&);
-void SelectionSort_Descending(vector<int>&);
-void BubbleSort(vector<int>&); //Algoritmo 02: Bubble Sort
+void SelectionSort_Ascending(vector<int>&); //Algoritmo 01: Selection Sort (Orden ascendente)
+void SelectionSort_Descending(vector<int>&); //Algoritmo 01: Selection Sort (Orden descendente)
+void BubbleSort_Ascending(vector<int>&); //Algoritmo 02: Bubble Sort (Orden ascendente)
+void BubbleSort_Descending(vector<int>&); //Algoritmo 02: Bubble Sort (Orden descendente)
+
 void InsertionSort(vector<int>&); //Algoritmo 03: Insertion Sort
 int ShellSort_KnuthGap(int); //Secuencia de Knuth para el algoritmo 04
 void ShellSort(vector<int>&); //Algoritmo 04: Shell Sort
@@ -169,8 +170,7 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-
-
+//Funcion de pruebas
 void TestFunction()
 {
 	srand(time(NULL));
@@ -188,8 +188,10 @@ void TestFunction()
 	}
 	
 	cout << "\n\nAlgoritmo...\n\n";
-	SelectionSort_Descending(ordered);
-	//BubbleSort(ordered);
+	//SelectionSort_Ascending(ordered);
+	//SelectionSort_Descending(ordered);
+	//BubbleSort_Ascending(ordered);
+	//BubbleSort_Descending(ordered);
 	//InsertionSort(ordered);
 	//ShellSort(ordered);
 	//mergeSort(ordered, 0, ordered.size());
@@ -205,7 +207,6 @@ void TestFunction()
 		cout << i << endl;
 	}
 }
-
 
 //Mensaje de inicio: El usuario decide si desea que el orden de los sets de datos sea ascendente o descendente
 void StartMessage(int* option)
@@ -258,6 +259,7 @@ void GenerateCommonDataSet()
 	
 	int max = 0;
 	
+	//Obtencion del rango mayor para usarlo como dimension maxima de los sets de datos comunes
 	if(race01Range > race02Range)
 	{
 		if(race01Range > race03Range)
@@ -321,14 +323,31 @@ void SelectionSort_Descending(vector<int>& set)
 	}
 }
 
-//Algoritmo 02: Bubble Sort
-void BubbleSort(vector<int>& set)
+//Algoritmo 02: Bubble Sort (Orden ascendente)
+void BubbleSort_Ascending(vector<int>& set)
 {
 	for(int i = 1; i < set.size(); i++)
 	{
 		for(int j = 0; j < set.size() - i; j++)
 		{
 			if(set[j] > set[j + 1])
+			{
+				int temp = set[j];
+				set[j] = set[j + 1];
+				set[j + 1] = temp;
+			}
+		}
+	}
+}
+
+//Algoritmo 02: Bubble Sort (Orden descendente)
+void BubbleSort_Descending(vector<int>& set)
+{
+	for(int i = 1; i < set.size(); i++)
+	{
+		for(int j = 0; j < set.size() - i; j++)
+		{
+			if(set[j] < set[j + 1])
 			{
 				int temp = set[j];
 				set[j] = set[j + 1];
@@ -411,7 +430,7 @@ auto ExecutionTime(int algorithm, vector<int> set)
 		case 2: //Bubble Sort
 		{
 			auto start = high_resolution_clock::now();
-			BubbleSort(set);
+			//BubbleSort(set);
 			auto end = high_resolution_clock::now();
 			
 			return duration_cast<duration<double>>(end - start);
