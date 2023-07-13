@@ -148,23 +148,23 @@ void HeapSort(vector<int>& set)
 
 auto ExecutionTime_Ascending(int, vector<int>&); //Tiempo de ejecucion (Orden ascendente)
 auto ExecutionTime_Descending(int, vector<int>&); //Tiempo de ejecucion (Orden descendente)
-auto ExecutionTime(int, vector<int>& = ordered); //Tiempo de ejecucion del algoritmo
+auto ExecutionTime(int, vector<int>&); //Tiempo de ejecucion del algoritmo
 void Race01(); //Carrera 01: Tablero de puntaje
 void Races(); //Carreras
 
 int main(int argc, char* argv[])
 {
-	/*
+	
 	StartMessage();
 	GenerateRanges();
 	InitializeAlgorithmsMap();
 	GenerateCommonDataSet();	
-	*/
+	/*
 	StartMessage();
 	InitializeAlgorithmsMap();
 	//TestFunction();
 	GenerateCommonDataSet();
-	
+	*/
 	Races();
 	/*Race01();
 	
@@ -208,10 +208,10 @@ void GenerateRanges()
 	race01Range = rand() % (100000 - 90000) + 90000;
 	race02Range = rand() % (70000 - 50000) + 50000;
 	race03Range = rand() % (7500 - 15000) + 7500;
-	
+	/*
 	race01Range = 20;
 	race02Range = 15;
-	race03Range = 10;
+	race03Range = 10;*/
 	
 	cout << "\n\tRangos:\n\t- Carrera 1: " << race01Range << "\n\t- Carrera 2: " << race02Range << "\n\t- Carrera 3: " << race03Range << endl;
 }
@@ -347,6 +347,7 @@ void BubbleSort_Descending(vector<int>& set)
 //Algoritmo 03: Insertion Sort (Orden ascendente)
 void InsertionSort_Ascending(vector<int>& set)
 {
+	cout << "Size: " << set.size() << endl;
 	for(int i = 0; i < set.size(); i++)
 	{
 		int j = i;
@@ -564,8 +565,8 @@ void Race01()
 	
 	for(int i = 0; i < numAlgorithms; i++)
 	{
-		auto time_taken = ExecutionTime(i + 1);
-		
+		auto time_taken = ExecutionTime(i + 1, ordered);
+	
 		//Agregar al map
 		results[i + 1] = time_taken.count();
 	}
@@ -576,7 +577,7 @@ void Race01()
 	cout << "\nCarrera por el tablero: Modo ordenado" << endl;
 	
 	//Recorrer el map y mostrar los datos
-	for(int i = 0; i < 7; i++)
+	for(int i = 0; i < 4; i++)
 	{
 		string algorithmName;
 		double time = results[i + 1];
@@ -606,6 +607,52 @@ void Race01()
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
 	
 	//Modo 2: Inversamente ordenado
+	
+	for(int i = 0; i < numAlgorithms; i++)
+	{
+		vector<int> inverselyCopy;
+		inverselyCopy.assign(inverselyOrdered.begin(), inverselyOrdered.end());
+		
+		auto time_taken = ExecutionTime(i + 1, inverselyCopy);
+	
+		//Agregar al map
+		results[i + 1] = time_taken.count();
+	}
+	
+	winnerTime = 0;
+	winnerName;
+	
+	cout << "\nCarrera por el tablero: Modo inversamente ordenado" << endl;
+	
+	//Recorrer el map y mostrar los datos
+	for(int i = 0; i < 4; i++)
+	{
+		string algorithmName;
+		double time = results[i + 1];
+		
+		for(const auto& pairAlg : algorithms)
+		{
+			if(i + 1 == pairAlg.second)
+			{
+				algorithmName = pairAlg.first;
+			}
+		}
+		
+		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
+		
+		if(winnerTime == 0)
+		{
+			winnerName = algorithmName;
+			winnerTime = time;
+		}
+		else if(winnerTime > time)
+		{
+			winnerName = algorithmName;
+			winnerTime = time;
+		}
+	}
+	
+	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
 	
 	//Modo 3: Aleatorios unicos
 	
@@ -663,6 +710,7 @@ void TestFunction()
 		cout << i << endl;
 	}*/
 	
+	/*
 	for(int i = 0; i < 4; i++)
 	{
 		vector<int> randomCopy = random;
@@ -674,7 +722,7 @@ void TestFunction()
 			cout << i << endl;
 		}
 	}	
-	
+	*/
 	for(const auto& i : ordered)
 	{
 		cout << i << endl;
