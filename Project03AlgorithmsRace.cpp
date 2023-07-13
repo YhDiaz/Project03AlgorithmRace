@@ -62,7 +62,7 @@ using std::chrono::duration_cast;
 int race01Range = 0;
 int race02Range = 0;
 int race03Range = 0;
-int numAlgorithms = 7;
+int numAlgorithms = 4/*7*/;
 unordered_map<string, int> algorithms;
 int order = 0; //1: Ascendente; 2: Descendente
 
@@ -150,6 +150,8 @@ auto ExecutionTime_Ascending(int, vector<int>&); //Tiempo de ejecucion (Orden as
 auto ExecutionTime_Descending(int, vector<int>&); //Tiempo de ejecucion (Orden descendente)
 auto ExecutionTime(int, vector<int>&); //Tiempo de ejecucion del algoritmo
 void Race01(); //Carrera 01: Tablero de puntaje
+void Race02(); //Carrera 02: Determinacion de caminos entre aldeas
+void Race03(); //Carerra 03: Renderizado de objetos
 void Races(); //Carreras
 
 int main(int argc, char* argv[])
@@ -347,7 +349,6 @@ void BubbleSort_Descending(vector<int>& set)
 //Algoritmo 03: Insertion Sort (Orden ascendente)
 void InsertionSort_Ascending(vector<int>& set)
 {
-	cout << "Size: " << set.size() << endl;
 	for(int i = 0; i < set.size(); i++)
 	{
 		int j = i;
@@ -673,7 +674,7 @@ void Race02()
 		inverselyOrderedRace02.assign(inverselyOrdered.begin(), inverselyOrdered.begin() + race02Range);
 	}
 	
-	cout << "\n\t\tDEBUG OrderedRace02 Size: " << orderedRace02.size() << "\n\t\tDEBUG InverselyOrderedRace02 Size: " << inverselyOrderedRace02.size() << endl;
+	//cout << "\n\t\tDEBUG OrderedRace02 Size: " << orderedRace02.size() << "\n\t\tDEBUG InverselyOrderedRace02 Size: " << inverselyOrderedRace02.size() << endl;
 	
 	//Modo 1: Ordenado
 	
@@ -777,7 +778,7 @@ void Race02()
 
 void Race03()
 {
-	/*vector<int> orderedRace03, inverselyOrderedRace03;
+	vector<int> orderedRace03, inverselyOrderedRace03;
 	
 	if(order == 1)
 	{
@@ -797,7 +798,7 @@ void Race03()
 	
 	for(int i = 0; i < numAlgorithms; i++)
 	{
-		auto time_taken = ExecutionTime(i + 1, ordered);
+		auto time_taken = ExecutionTime(i + 1, orderedRace03);
 	
 		//Agregar al map
 		results[i + 1] = time_taken.count();
@@ -806,10 +807,10 @@ void Race03()
 	double winnerTime = 0;
 	string winnerName;
 	
-	cout << "\nCarrera por el tablero: Modo ordenado" << endl;
+	cout << "\nCarrera por el renderizado de objetos: Modo ordenado" << endl;
 	
 	//Recorrer el map y mostrar los datos
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < numAlgorithms; i++)
 	{
 		string algorithmName;
 		double time = results[i + 1];
@@ -824,7 +825,7 @@ void Race03()
 		
 		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
 		
-		if(winnerTime == 0)
+		if(i == 0)
 		{
 			winnerName = algorithmName;
 			winnerTime = time;
@@ -843,7 +844,7 @@ void Race03()
 	for(int i = 0; i < numAlgorithms; i++)
 	{
 		vector<int> inverselyCopy;
-		inverselyCopy.assign(inverselyOrdered.begin(), inverselyOrdered.end());
+		inverselyCopy.assign(inverselyOrderedRace03.begin(), inverselyOrderedRace03.end());
 		
 		auto time_taken = ExecutionTime(i + 1, inverselyCopy);
 	
@@ -854,10 +855,10 @@ void Race03()
 	winnerTime = 0;
 	winnerName;
 	
-	cout << "\nCarrera por el tablero: Modo inversamente ordenado" << endl;
+	cout << "\nCarrera por el renderizado de objetos: Modo inversamente ordenado" << endl;
 	
 	//Recorrer el map y mostrar los datos
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < numAlgorithms; i++)
 	{
 		string algorithmName;
 		double time = results[i + 1];
@@ -872,7 +873,7 @@ void Race03()
 		
 		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
 		
-		if(winnerTime == 0)
+		if(i == 0)
 		{
 			winnerName = algorithmName;
 			winnerTime = time;
@@ -889,7 +890,6 @@ void Race03()
 	//Modo 3: Aleatorios unicos
 	
 	//Modo 4: Aleatorios duplicados
-	*/
 }
 
 void Races()
