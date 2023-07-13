@@ -570,27 +570,26 @@ void Race01()
 		results[i + 1] = time_taken.count();
 	}
 	
-	int place = 1;
 	double winnerTime = 0;
 	string winnerName;
 	
 	cout << "\nCarrera por el tablero: Modo ordenado" << endl;
 	
 	//Recorrer el map y mostrar los datos
-	for(const auto& pairRes : results)
+	for(int i = 0; i < 7; i++)
 	{
 		string algorithmName;
-		double time = pairRes.second;
+		double time = results[i + 1];
 		
 		for(const auto& pairAlg : algorithms)
 		{
-			if(pairRes.first == pairAlg.second)
+			if(i + 1 == pairAlg.second)
 			{
 				algorithmName = pairAlg.first;
 			}
 		}
 		
-		cout << place << ". " << algorithmName << ", " << time << endl;
+		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
 		
 		if(winnerTime == 0)
 		{
@@ -602,8 +601,6 @@ void Race01()
 			winnerName = algorithmName;
 			winnerTime = time;
 		}
-		
-		place++;
 	}
 	
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
