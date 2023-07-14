@@ -75,6 +75,7 @@ void Print(vector<int>);
 void StartMessage(); //Eleccion de ordenamiento de datos
 void GenerateRanges(); //Generacion de rangos
 void InitializeAlgorithmsMap(); //Inicializacion del mapa de algoritmos
+int GetMaxRange(); //Obtencion del rango mayor
 void GenerateCommonDataSet(); //Sets de datos comunes
 vector<int> GenerateRandomDataSet(); //Sets de datos aleatorios
 void SelectionSort_Ascending(vector<int>&); //Algoritmo 01: Selection Sort (Orden ascendente)
@@ -158,7 +159,6 @@ void Races(); //Carreras
 
 int main(int argc, char* argv[])
 {
-	
 	StartMessage();
 	GenerateRanges();
 	InitializeAlgorithmsMap();
@@ -170,34 +170,6 @@ int main(int argc, char* argv[])
 	GenerateCommonDataSet();
 	*/
 	Races();
-	
-	/*
-	srand(time(NULL));
-	vector<int> array;
-	
-	for(int i = 0; i < 20; i++)
-	{
-		int num = rand() % 20 + 1;
-		array.push_back(num);
-	}
-	
-	Print(array);
-	cout << "\n\t\t";
-	
-	array.erase(array.begin() + 6);
-	
-	Print(array);*/
-	
-	/*Race01();
-	
-	if(order == 1)
-	{
-		cout << "MODO ASCENDENTE";
-	}
-	else
-	{
-		cout << "MODO DESCENDENTE";
-	}*/
 	
 	return 0;
 }
@@ -233,7 +205,8 @@ void GenerateRanges()
 	/*
 	race01Range = 20;
 	race02Range = 15;
-	race03Range = 10;*/
+	race03Range = 10;
+	*/
 	
 	cout << "\n\tRangos:\n\t- Carrera 1: " << race01Range << "\n\t- Carrera 2: " << race02Range << "\n\t- Carrera 3: " << race03Range << endl;
 }
@@ -250,33 +223,36 @@ void InitializeAlgorithmsMap()
 	algorithms["Heap Sort"] = 7;
 }
 
-//Generacion de sets de datos comunes: Set de datos comunes para todas las carreras
-void GenerateCommonDataSet()
+//Obtencion del rango mayor para usarlo como dimension maxima de los sets de datos comunes
+int GetMaxRange()
 {
-	cout << "\nGenerando...";
-	
-	int max = 0;
-	
-	//Obtencion del rango mayor para usarlo como dimension maxima de los sets de datos comunes
 	if(race01Range > race02Range)
 	{
 		if(race01Range > race03Range)
 		{
-			max = race01Range;
+			return race01Range;
 		}
 		else
 		{
-			max = race03Range;
+			return race03Range;
 		}
 	}
 	else if(race02Range > race03Range)
 	{
-		max = race02Range;
+		return race02Range;
 	}
 	else
 	{
-		max = race03Range;
+		return race03Range;
 	}
+}
+
+//Generacion de sets de datos comunes: Set de datos comunes para todas las carreras
+void GenerateCommonDataSet()
+{
+	cout << "\n\tGenerando sets de datos comunes (ordenado e inversamente ordenado)...";
+	
+	int max = GetMaxRange();
 	
 	if(order == 1) //Generacion de los sets si el orden elegido es ascendente
 	{
@@ -295,7 +271,7 @@ void GenerateCommonDataSet()
 		}
 	}
 	
-	cout << "\nSet de datos generado";
+	cout << "\n\tSets de datos comunes generados";
 }
 
 //Generacion de set de datos aleatorios
