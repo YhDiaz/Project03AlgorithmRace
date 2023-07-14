@@ -70,11 +70,13 @@ vector<int> ordered;
 vector<int> inverselyOrdered;
 
 void TestFunction();
+void Print(vector<int>);
 
 void StartMessage(); //Eleccion de ordenamiento de datos
 void GenerateRanges(); //Generacion de rangos
 void InitializeAlgorithmsMap(); //Inicializacion del mapa de algoritmos
 void GenerateCommonDataSet(); //Sets de datos comunes
+vector<int> GenerateRandomDataSet(); //Sets de datos aleatorios
 void SelectionSort_Ascending(vector<int>&); //Algoritmo 01: Selection Sort (Orden ascendente)
 void SelectionSort_Descending(vector<int>&); //Algoritmo 01: Selection Sort (Orden descendente)
 void BubbleSort_Ascending(vector<int>&); //Algoritmo 02: Bubble Sort (Orden ascendente)
@@ -168,6 +170,24 @@ int main(int argc, char* argv[])
 	GenerateCommonDataSet();
 	*/
 	Races();
+	
+	/*
+	srand(time(NULL));
+	vector<int> array;
+	
+	for(int i = 0; i < 20; i++)
+	{
+		int num = rand() % 20 + 1;
+		array.push_back(num);
+	}
+	
+	Print(array);
+	cout << "\n\t\t";
+	
+	array.erase(array.begin() + 6);
+	
+	Print(array);*/
+	
 	/*Race01();
 	
 	if(order == 1)
@@ -276,6 +296,46 @@ void GenerateCommonDataSet()
 	}
 	
 	cout << "\nSet de datos generado";
+}
+
+//Generacion de set de datos aleatorios
+vector<int> GenerateRandomDataSet(bool unique, int range)
+{
+	srand(time(NULL));
+	
+	if(unique)
+	{
+		vector<int> backup;
+	
+		for(int i = 0; i < range; i++)
+		{
+			backup.push_back(i + 1);
+		}
+		
+		vector<int> uniqueRandom;
+		
+		for(int i = 0; i < range; i++)
+		{
+			int num = rand() % (range - i) + 1;
+			uniqueRandom.push_back(backup[num - 1]);
+			//cout << "\n\tNum: " << num << ", Backup[num - 1]: " << backup[num - 1]; //DEBUG
+			backup.erase(backup.begin() + num - 1);
+		}
+		
+		return uniqueRandom;
+	}
+	else
+	{
+		vector<int> duplicateRandom;
+		
+		for(int i = 0; i < range; i++)
+		{
+			int num = rand() % range + 1;
+			duplicateRandom.push_back(num);
+		}
+		
+		return duplicateRandom;
+	}	
 }
 
 //Algoritmo 01: Selection Sort (Orden ascendente)
@@ -560,7 +620,7 @@ auto ExecutionTime(int algorithm, vector<int>& set)
 void Race01()
 {
 	//Modo 1: Ordenado
-	
+	/*
 	//AGREGAR UN MAP NumAlgorithm (Key) --- Time (Value)
 	unordered_map<int, double> results;
 	
@@ -653,8 +713,11 @@ void Race01()
 	}
 	
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
-	
+	*/
 	//Modo 3: Aleatorios unicos
+	vector<int> uniqueRandom = GenerateRandomDataSet(true, race01Range);
+	
+	//Print(uniqueRandom);
 	
 	//Modo 4: Aleatorios duplicados
 }
@@ -949,6 +1012,14 @@ void TestFunction()
 	for(const auto& i : ordered)
 	{
 		cout << i << endl;
+	}
+}
+
+void Print(vector<int> set)
+{
+	for(const auto& val : set)
+	{
+		cout << val << endl;
 	}
 }
 
