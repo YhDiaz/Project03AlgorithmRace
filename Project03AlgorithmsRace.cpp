@@ -155,6 +155,7 @@ void HeapSort(vector<int>& set)
 auto ExecutionTime_Ascending(int, vector<int>&); //Tiempo de ejecucion (Orden ascendente)
 auto ExecutionTime_Descending(int, vector<int>&); //Tiempo de ejecucion (Orden descendente)
 auto ExecutionTime(int, vector<int>&); //Tiempo de ejecucion del algoritmo
+void Mode01Ordered(int, vector<int>); //Modo 01: Modo ordenado
 void Race01(); //Carrera 01: Tablero de puntaje
 void Race02(); //Carrera 02: Determinacion de caminos entre aldeas
 void Race03(); //Carerra 03: Renderizado de objetos
@@ -606,6 +607,7 @@ auto ExecutionTime(int algorithm, vector<int>& set)
 	}	
 }
 
+//Modo 01: Set de datos ordenados
 void Mode01Ordered(int race, vector<int> set)
 {
 	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
@@ -665,32 +667,37 @@ void Mode01Ordered(int race, vector<int> set)
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
 }
 
-//Carrera 01: Tablero de puntaje
-void Race01()
+//Modo 02: Set de datos inversamente ordenado
+void Mode02InverselyOrdered(int race, vector<int> set)
 {
-	double winnerTime = 0;
-	string winnerName;
-	unordered_map<int, double> results;
+	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
 	
-	//Modo 1: Ordenado
-	Mode01Ordered(1, ordered);
-	
-	//Modo 2: Inversamente ordenado
-	/*
 	for(int i = 0; i < numAlgorithms; i++)
 	{
-		vector<int> inverselyCopy;
-		inverselyCopy.assign(inverselyOrdered.begin(), inverselyOrdered.end());
+		vector<int> setCopy;
+		setCopy.assign(set.begin(), set.end());
 		
-		auto time_taken = ExecutionTime(i + 1, inverselyCopy);
-	
-		//Agregar al map
-		results[i + 1] = time_taken.count();
+		auto time_taken = ExecutionTime(i + 1, setCopy);
+		results[i + 1] = time_taken.count(); //Agregar al map
 	}
 	
-	winnerTime = 0;
+	double winnerTime = 0;
+	string winnerName;
 	
-	cout << "\nCarrera por el tablero: Modo inversamente ordenado" << endl;
+	if(race == 1)
+	{
+		cout << "\nCarrera por el tablero: ";
+	}
+	else if(race == 2)
+	{
+		cout << "\nCarrera por los caminos entre aldeas: ";
+	}
+	else
+	{
+		cout << "\nCarrera por el renderizado de objetos: ";
+	}
+	
+	cout << "Modo inversamente ordenado" << endl;
 	
 	//Recorrer el map y mostrar los datos
 	for(int i = 0; i < numAlgorithms; i++)
@@ -721,7 +728,20 @@ void Race01()
 	}
 	
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
-	*/
+}
+
+//Carrera 01: Tablero de puntaje
+void Race01()
+{
+	double winnerTime = 0;
+	string winnerName;
+	unordered_map<int, double> results;
+	
+	//Modo 1: Ordenado
+	//Mode01Ordered(1, ordered);
+	
+	//Modo 2: Inversamente ordenado
+	Mode02InverselyOrdered(1, inverselyOrdered);
 	//Modo 3: Aleatorios unicos
 	/*
 	vector<int> uniqueRandom = GenerateRandomDataSet(true, race01Range);
@@ -845,55 +865,12 @@ void Race02()
 	string winnerName;
 	
 	//Modo 1: Ordenado
-	Mode01Ordered(2, orderedRace02);
+	//Mode01Ordered(2, orderedRace02);
 	
 	//Modo 2: Inversamente ordenado
+	Mode02InverselyOrdered(2, inverselyOrderedRace02);
+	
 	/*
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		vector<int> inverselyCopy;
-		inverselyCopy.assign(inverselyOrderedRace02.begin(), inverselyOrderedRace02.end());
-		
-		auto time_taken = ExecutionTime(i + 1, inverselyCopy);
-		
-		//Agregar al map
-		results[i + 1] = time_taken.count();
-	}
-	
-	winnerTime = 0;
-	
-	cout << "\nCarrera por los caminos entre aldeas: Modo inversamente ordenado" << endl;
-	
-	//Recorrer el map y mostrar los datos
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		string algorithmName;
-		double time = results[i + 1];
-		
-		for(const auto& pairAlg : algorithms)
-		{
-			if(i + 1 == pairAlg.second)
-			{
-				algorithmName = pairAlg.first;
-			}
-		}
-		
-		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
-		
-		if(i == 0)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-		else if(winnerTime > time)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-	}
-	
-	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
-	
 	//Modo 3: Aleatorios unicos
 	vector<int> uniqueRandom = GenerateRandomDataSet(true, race02Range);
 	cout << "\n\tSet de datos aleatorios unicos generado";
@@ -1017,53 +994,7 @@ void Race03()
 	Mode01Ordered(3, orderedRace03);
 	
 	//Modo 2: Inversamente ordenado
-	
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		vector<int> inverselyCopy;
-		inverselyCopy.assign(inverselyOrderedRace03.begin(), inverselyOrderedRace03.end());
-		
-		auto time_taken = ExecutionTime(i + 1, inverselyCopy);
-	
-		//Agregar al map
-		results[i + 1] = time_taken.count();
-	}
-	
-	winnerTime = 0;
-	winnerName;
-	
-	cout << "\nCarrera por el renderizado de objetos: Modo inversamente ordenado" << endl;
-	cout << "\n\tDEBUG InverselyOrderedSize: " << inverselyOrderedRace03.size() << endl;
-	
-	//Recorrer el map y mostrar los datos
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		string algorithmName;
-		double time = results[i + 1];
-		
-		for(const auto& pairAlg : algorithms)
-		{
-			if(i + 1 == pairAlg.second)
-			{
-				algorithmName = pairAlg.first;
-			}
-		}
-		
-		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
-		
-		if(i == 0)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-		else if(winnerTime > time)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-	}
-	
-	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
+	Mode02InverselyOrdered(3, inverselyOrderedRace03);
 	
 	//Modo 3: Aleatorios unicos
 	vector<int> uniqueRandom = GenerateRandomDataSet(true, race03Range);
