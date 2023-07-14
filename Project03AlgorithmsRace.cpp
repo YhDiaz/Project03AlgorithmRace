@@ -274,43 +274,54 @@ void GenerateCommonDataSet()
 	cout << "\n\tSets de datos comunes generados";
 }
 
+//Generacion del set de datos aleatorios unicos
+vector<int> GenerateUniqueRandomDataSet(int range)
+{
+	srand(time(NULL));
+	vector<int> backup;
+
+	for(int i = 0; i < range; i++)
+	{
+		backup.push_back(i + 1);
+	}
+	
+	vector<int> uniqueRandom;
+	
+	for(int i = 0; i < range; i++)
+	{
+		int num = rand() % (range - i) + 1;
+		uniqueRandom.push_back(backup[num - 1]);
+		backup.erase(backup.begin() + num - 1);
+	}
+	
+	return uniqueRandom;
+}
+
+//Generacion del set de datos aleatorios duplicados
+vector<int> GenerateDuplicateRandomDataSet(int range)
+{
+	srand(time(NULL));
+	vector<int> duplicateRandom;
+	
+	for(int i = 0; i < range; i++)
+	{
+		int num = rand() % range + 1;
+		duplicateRandom.push_back(num);
+	}
+	
+	return duplicateRandom;
+}
+
 //Generacion de set de datos aleatorios
 vector<int> GenerateRandomDataSet(bool unique, int range)
 {
-	srand(time(NULL));
-	
 	if(unique)
 	{
-		vector<int> backup;
-	
-		for(int i = 0; i < range; i++)
-		{
-			backup.push_back(i + 1);
-		}
-		
-		vector<int> uniqueRandom;
-		
-		for(int i = 0; i < range; i++)
-		{
-			int num = rand() % (range - i) + 1;
-			uniqueRandom.push_back(backup[num - 1]);
-			//cout << "\n\tNum: " << num << ", Backup[num - 1]: " << backup[num - 1]; //DEBUG
-			backup.erase(backup.begin() + num - 1);
-		}
-		
-		return uniqueRandom;
+		return GenerateUniqueRandomDataSet(range);
 	}
 	else
 	{
-		vector<int> duplicateRandom;
-		
-		for(int i = 0; i < range; i++)
-		{
-			int num = rand() % range + 1;
-			duplicateRandom.push_back(num);
-		}
-		
-		return duplicateRandom;
+		return GenerateDuplicateRandomDataSet(range);
 	}	
 }
 
