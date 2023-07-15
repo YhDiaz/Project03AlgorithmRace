@@ -157,6 +157,8 @@ auto ExecutionTime_Descending(int, vector<int>&); //Tiempo de ejecucion (Orden d
 auto ExecutionTime(int, vector<int>&); //Tiempo de ejecucion del algoritmo
 void Mode01Ordered(int, vector<int>); //Modo 01: Modo ordenado
 void Mode02InverselyOrdered(int, vector<int>); //Modo 02: Modo inversamente ordenado
+void Mode03UniqueRandom(int); //Modo 03: Modo aleatorios unicos
+void Mode04DuplicateRandom(int); //Modo 04: Modo aleatorios duplicados
 void Race01(); //Carrera 01: Tablero de puntaje
 void Race02(); //Carrera 02: Determinacion de caminos entre aldeas
 void Race03(); //Carerra 03: Renderizado de objetos
@@ -731,6 +733,7 @@ void Mode02InverselyOrdered(int race, vector<int> set)
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
 }
 
+//Modo 03: Set de datos aleatorios unicos
 void Mode03UniqueRandom(int race)
 {
 	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
@@ -757,9 +760,7 @@ void Mode03UniqueRandom(int race)
 		setCopy.assign(set.begin(), set.end());
 		
 		auto time_taken = ExecutionTime(i + 1, setCopy);
-	
-		//Agregar al map
-		results[i + 1] = time_taken.count();
+		results[i + 1] = time_taken.count(); //Agregar al map
 	}
 	
 	double winnerTime = 0;
@@ -811,41 +812,53 @@ void Mode03UniqueRandom(int race)
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
 }
 
-//Carrera 01: Tablero de puntaje
-void Race01()
+//Modo 04: Set de datos aleatorios duplicados
+void Mode04DuplicateRandom(int race)
 {
-	double winnerTime = 0;
-	string winnerName;
-	unordered_map<int, double> results;
+	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
+	vector<int> set;
 	
-	//Modo 1: Ordenado
-	//Mode01Ordered(1, ordered);
+	if(race == 1)
+	{
+		set = GenerateRandomDataSet(false, race01Range);
+	}
+	else if(race == 2)
+	{
+		set = GenerateRandomDataSet(false, race02Range);
+	}
+	else
+	{
+		set = GenerateRandomDataSet(false, race03Range);
+	}
 	
-	//Modo 2: Inversamente ordenado
-	//Mode02InverselyOrdered(1, inverselyOrdered);
-	
-	//Modo 3: Aleatorios unicos
-	Mode03UniqueRandom(1);
-	
-	//Modo 4: Aleatorios duplicados
-	/*
-	vector<int> duplicateRandom = GenerateRandomDataSet(false, race01Range);
 	cout << "\n\tSet de datos aleatorios duplicados generado";
 	
 	for(int i = 0; i < numAlgorithms; i++)
 	{
-		vector<int> duplicateRandomCopy;
-		duplicateRandomCopy.assign(duplicateRandom.begin(), duplicateRandom.end());
+		vector<int> setCopy;
+		setCopy.assign(set.begin(), set.end());
 		
-		auto time_taken = ExecutionTime(i + 1, duplicateRandomCopy);
-	
-		//Agregar al map
-		results[i + 1] = time_taken.count();
+		auto time_taken = ExecutionTime(i + 1, setCopy);
+		results[i + 1] = time_taken.count(); //Agregar al map
 	}
 	
-	winnerTime = 0;
+	double winnerTime = 0;
+	string winnerName;
 	
-	cout << "\nCarrera por el tablero: Modo aleatorios duplicados" << endl;
+	if(race == 1)
+	{
+		cout << "\nCarrera por el tablero: ";
+	}
+	else if(race == 2)
+	{
+		cout << "\nCarrera por los caminos entre aldeas: ";
+	}
+	else
+	{
+		cout << "\nCarrera por el renderizado de objetos: ";
+	}
+	
+	cout << "Modo aleatorios duplicados" << endl;
 	
 	//Recorrer el map y mostrar los datos
 	for(int i = 0; i < numAlgorithms; i++)
@@ -876,7 +889,22 @@ void Race01()
 	}
 	
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
-	*/
+}
+
+//Carrera 01: Tablero de puntaje
+void Race01()
+{
+	//Modo 1: Ordenado
+	//Mode01Ordered(1, ordered);
+	
+	//Modo 2: Inversamente ordenado
+	//Mode02InverselyOrdered(1, inverselyOrdered);
+	
+	//Modo 3: Aleatorios unicos
+	//Mode03UniqueRandom(1);
+	
+	//Modo 4: Aleatorios duplicados
+	Mode04DuplicateRandom(1);
 }
 
 void Race02()
@@ -894,12 +922,6 @@ void Race02()
 		inverselyOrderedRace02.assign(inverselyOrdered.begin(), inverselyOrdered.begin() + race02Range);
 	}
 	
-	//cout << "\n\t\tDEBUG OrderedRace02 Size: " << orderedRace02.size() << "\n\t\tDEBUG InverselyOrderedRace02 Size: " << inverselyOrderedRace02.size() << endl;
-	
-	unordered_map<int, double> results;
-	double winnerTime = 0;
-	string winnerName;
-	
 	//Modo 1: Ordenado
 	//Mode01Ordered(2, orderedRace02);
 	
@@ -909,56 +931,8 @@ void Race02()
 	//Modo 3: Aleatorios unicos
 	Mode03UniqueRandom(2);
 	
-	/*
 	//Modo 4: Aleatorios duplicados
-	vector<int> duplicateRandom = GenerateRandomDataSet(false, race02Range);
-	cout << "\n\tSet de datos aleatorios duplicados generado (Carrera 2) Size: " << duplicateRandom.size();
-	
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		vector<int> duplicateRandomCopy;
-		duplicateRandomCopy.assign(duplicateRandom.begin(), duplicateRandom.end());
-		
-		auto time_taken = ExecutionTime(i + 1, duplicateRandomCopy);
-	
-		//Agregar al map
-		results[i + 1] = time_taken.count();
-	}
-	
-	winnerTime = 0;
-	
-	cout << "\nCarrera por los caminos entre aldeas: Modo aleatorios duplicados" << endl;
-	
-	//Recorrer el map y mostrar los datos
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		string algorithmName;
-		double time = results[i + 1];
-		
-		for(const auto& pairAlg : algorithms)
-		{
-			if(i + 1 == pairAlg.second)
-			{
-				algorithmName = pairAlg.first;
-			}
-		}
-		
-		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
-		
-		if(i == 0)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-		else if(winnerTime > time)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-	}
-	
-	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
-	*/
+	Mode04DuplicateRandom(2);
 }
 
 void Race03()
@@ -976,10 +950,6 @@ void Race03()
 		inverselyOrderedRace03.assign(inverselyOrdered.begin(), inverselyOrdered.begin() + race03Range);
 	}
 	
-	unordered_map<int, double> results;
-	double winnerTime = 0;
-	string winnerName;
-	
 	//Modo 1: Ordenado
 	Mode01Ordered(3, orderedRace03);
 	
@@ -990,54 +960,7 @@ void Race03()
 	Mode03UniqueRandom(3);
 	
 	//Modo 4: Aleatorios duplicados
-	vector<int> duplicateRandom = GenerateRandomDataSet(false, race03Range);
-	
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		vector<int> duplicateRandomCopy;
-		duplicateRandomCopy.assign(duplicateRandom.begin(), duplicateRandom.end());
-		
-		auto time_taken = ExecutionTime(i + 1, duplicateRandomCopy);
-	
-		//Agregar al map
-		results[i + 1] = time_taken.count();
-	}
-	
-	winnerTime = 0;
-	winnerName;
-	
-	cout << "\nCarrera por el renderizado de objetos: Modo aleatorios duplicados" << endl;
-	cout << "\n\tDEBUG DuplicateRandomSize: " << duplicateRandom.size() << endl;
-	
-	//Recorrer el map y mostrar los datos
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		string algorithmName;
-		double time = results[i + 1];
-		
-		for(const auto& pairAlg : algorithms)
-		{
-			if(i + 1 == pairAlg.second)
-			{
-				algorithmName = pairAlg.first;
-			}
-		}
-		
-		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
-		
-		if(i == 0)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-		else if(winnerTime > time)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-	}
-	
-	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
+	Mode04DuplicateRandom(3);
 }
 
 void Races()
