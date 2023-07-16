@@ -159,6 +159,7 @@ void Mode01Ordered(int, vector<int>); //Modo 01: Modo ordenado
 void Mode02InverselyOrdered(int, vector<int>); //Modo 02: Modo inversamente ordenado
 void Mode03UniqueRandom(int); //Modo 03: Modo aleatorios unicos
 void Mode04DuplicateRandom(int); //Modo 04: Modo aleatorios duplicados
+vector<int> GetTruncatedCommonDataSet(int, bool); //Truncamiento de sets de datos comunes
 void Race01(); //Carrera 01: Tablero de puntaje
 void Race02(); //Carrera 02: Determinacion de caminos entre aldeas
 void Race03(); //Carerra 03: Renderizado de objetos
@@ -209,11 +210,6 @@ void GenerateRanges()
 	race01Range = rand() % (100000 - 90000) + 90000;
 	race02Range = rand() % (70000 - 50000) + 50000;
 	race03Range = rand() % (7500 - 15000) + 7500;
-	/*
-	race01Range = 20;
-	race02Range = 15;
-	race03Range = 10;
-	*/
 	
 	cout << "\n\tRangos:\n\t- Carrera 1: " << race01Range << "\n\t- Carrera 2: " << race02Range << "\n\t- Carrera 3: " << race03Range << endl;
 }
@@ -891,6 +887,71 @@ void Mode04DuplicateRandom(int race)
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
 }
 
+//Obtencion de los sets de datos comunes (ordenado e inversamente ordenado) truncados para las carreras 2 y 3
+vector<int> GetTruncatedCommonDataSet(int race, bool orderedSet)
+{
+	vector<int> orderedAux, inverselyOrderedAux;
+	
+	if(order == 1)
+	{
+		if(orderedSet)
+		{
+			if(race == 2)
+			{
+				orderedAux.assign(ordered.begin(), ordered.begin() + race02Range);
+			}
+			else
+			{
+				orderedAux.assign(ordered.begin(), ordered.begin() + race03Range);
+			}
+			
+			return orderedAux;
+		}
+		else
+		{
+			if(race == 2)
+			{
+				inverselyOrderedAux.assign(inverselyOrdered.end() - race02Range, inverselyOrdered.end());
+			}
+			else
+			{
+				inverselyOrderedAux.assign(inverselyOrdered.end() - race03Range, inverselyOrdered.end());
+			}
+			
+			return inverselyOrderedAux;
+		}
+	}
+	else
+	{
+		if(orderedSet)
+		{
+			if(race == 2)
+			{
+				orderedAux.assign(ordered.end() - race02Range, ordered.end());
+			}
+			else
+			{
+				orderedAux.assign(ordered.end() - race03Range, ordered.end());
+			}
+			
+			return orderedAux;
+		}
+		else
+		{
+			if(race == 2)
+			{
+				inverselyOrderedAux.assign(inverselyOrdered.begin(), inverselyOrdered.begin() + race02Range);
+			}
+			else
+			{
+				inverselyOrderedAux.assign(inverselyOrdered.begin(), inverselyOrdered.begin() + race03Range);
+			}
+			
+			return inverselyOrderedAux;
+		}
+	}
+}
+
 //Carrera 01: Tablero de puntaje
 void Race01()
 {
@@ -904,23 +965,12 @@ void Race01()
 	//Mode03UniqueRandom(1);
 	
 	//Modo 4: Aleatorios duplicados
-	Mode04DuplicateRandom(1);
+	//Mode04DuplicateRandom(1);
 }
 
 void Race02()
 {
-	vector<int> orderedRace02, inverselyOrderedRace02;
-	
-	if(order == 1)
-	{
-		orderedRace02.assign(ordered.begin(), ordered.begin() + race02Range);
-		inverselyOrderedRace02.assign(inverselyOrdered.end() - race02Range, inverselyOrdered.end());
-	}
-	else
-	{
-		orderedRace02.assign(ordered.end() - race02Range, ordered.end());
-		inverselyOrderedRace02.assign(inverselyOrdered.begin(), inverselyOrdered.begin() + race02Range);
-	}
+	vector<int> orderedRace02 = GetTruncatedCommonDataSet(2, true), inverselyOrderedRace02 = GetTruncatedCommonDataSet(2, false);
 	
 	//Modo 1: Ordenado
 	//Mode01Ordered(2, orderedRace02);
@@ -937,19 +987,8 @@ void Race02()
 
 void Race03()
 {
-	vector<int> orderedRace03, inverselyOrderedRace03;
-	
-	if(order == 1)
-	{
-		orderedRace03.assign(ordered.begin(), ordered.begin() + race03Range);
-		inverselyOrderedRace03.assign(inverselyOrdered.end() - race03Range, inverselyOrdered.end());
-	}
-	else
-	{
-		orderedRace03.assign(ordered.end() - race03Range, ordered.end());
-		inverselyOrderedRace03.assign(inverselyOrdered.begin(), inverselyOrdered.begin() + race03Range);
-	}
-	
+	vector<int> orderedRace03 = GetTruncatedCommonDataSet(3, true), inverselyOrderedRace03 = GetTruncatedCommonDataSet(3, false);
+		
 	//Modo 1: Ordenado
 	Mode01Ordered(3, orderedRace03);
 	
@@ -967,7 +1006,7 @@ void Races()
 {
 	Race01(); //Carrera por el tablero
 	Race02(); //Carrera por la determinacion de caminos
-	Race03(); //Carrera por el renderizado¿
+	Race03(); //Carrera por el renderizado
 }
 
 //Funcion de pruebas
