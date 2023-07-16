@@ -66,6 +66,7 @@ int numAlgorithms = 4/*7*/;
 unordered_map<string, int> algorithms;
 int order = 0; //1: Ascendente; 2: Descendente
 int races = 3; //Numero de carreras
+int modes = 4;
 
 vector<int> ordered;
 vector<int> inverselyOrdered;
@@ -151,18 +152,14 @@ void HeapSort(vector<int>& set)
 	
 }
 
-
 auto ExecutionTime_Ascending(int, vector<int>&); //Tiempo de ejecucion (Orden ascendente)
 auto ExecutionTime_Descending(int, vector<int>&); //Tiempo de ejecucion (Orden descendente)
 auto ExecutionTime(int, vector<int>&); //Tiempo de ejecucion del algoritmo
-void Mode01Ordered(int, vector<int>); //Modo 01: Modo ordenado
-void Mode02InverselyOrdered(int, vector<int>); //Modo 02: Modo inversamente ordenado
+void Mode01Ordered(int); //Modo 01: Modo ordenado
+void Mode02InverselyOrdered(int); //Modo 02: Modo inversamente ordenado
 void Mode03UniqueRandom(int); //Modo 03: Modo aleatorios unicos
 void Mode04DuplicateRandom(int); //Modo 04: Modo aleatorios duplicados
 vector<int> GetTruncatedCommonDataSet(int, bool); //Truncamiento de sets de datos comunes
-void Race01(); //Carrera 01: Tablero de puntaje
-void Race02(); //Carrera 02: Determinacion de caminos entre aldeas
-void Race03(); //Carerra 03: Renderizado de objetos
 void Races(); //Carreras
 
 int main(int argc, char* argv[])
@@ -206,10 +203,14 @@ void GenerateRanges()
 	//FORMULA PARA OBTENCION DE UN VALOR DENTRO DEL RANGO
 	//RANGO: min --- max
 	//FORMULA: rand() % (max - min) + min
-	
+	/*
 	race01Range = rand() % (100000 - 90000) + 90000;
 	race02Range = rand() % (70000 - 50000) + 50000;
 	race03Range = rand() % (7500 - 15000) + 7500;
+	*/
+	race01Range = 10000;
+	race02Range = 5000;
+	race03Range = 1000;
 	
 	cout << "\n\tRangos:\n\t- Carrera 1: " << race01Range << "\n\t- Carrera 2: " << race02Range << "\n\t- Carrera 3: " << race03Range << endl;
 }
@@ -607,8 +608,19 @@ auto ExecutionTime(int algorithm, vector<int>& set)
 }
 
 //Modo 01: Set de datos ordenados
-void Mode01Ordered(int race, vector<int> set)
+void Mode01Ordered(int race)
 {
+	vector<int> set;
+	
+	if(race == 1)
+	{
+		set = ordered;
+	}
+	else
+	{
+		set = GetTruncatedCommonDataSet(race, true);
+	}
+	
 	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
 	
 	for(int i = 0; i < numAlgorithms; i++)
@@ -667,8 +679,19 @@ void Mode01Ordered(int race, vector<int> set)
 }
 
 //Modo 02: Set de datos inversamente ordenado
-void Mode02InverselyOrdered(int race, vector<int> set)
+void Mode02InverselyOrdered(int race)
 {
+	vector<int> set;
+	
+	if(race == 1)
+	{
+		set = inverselyOrdered;
+	}
+	else
+	{
+		set = GetTruncatedCommonDataSet(race, false);
+	}
+	
 	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
 	
 	for(int i = 0; i < numAlgorithms; i++)
@@ -952,61 +975,26 @@ vector<int> GetTruncatedCommonDataSet(int race, bool orderedSet)
 	}
 }
 
-//Carrera 01: Tablero de puntaje
-void Race01()
-{
-	//Modo 1: Ordenado
-	//Mode01Ordered(1, ordered);
-	
-	//Modo 2: Inversamente ordenado
-	//Mode02InverselyOrdered(1, inverselyOrdered);
-	
-	//Modo 3: Aleatorios unicos
-	//Mode03UniqueRandom(1);
-	
-	//Modo 4: Aleatorios duplicados
-	//Mode04DuplicateRandom(1);
-}
-
-void Race02()
-{
-	vector<int> orderedRace02 = GetTruncatedCommonDataSet(2, true), inverselyOrderedRace02 = GetTruncatedCommonDataSet(2, false);
-	
-	//Modo 1: Ordenado
-	//Mode01Ordered(2, orderedRace02);
-	
-	//Modo 2: Inversamente ordenado
-	//Mode02InverselyOrdered(2, inverselyOrderedRace02);
-	
-	//Modo 3: Aleatorios unicos
-	Mode03UniqueRandom(2);
-	
-	//Modo 4: Aleatorios duplicados
-	Mode04DuplicateRandom(2);
-}
-
-void Race03()
-{
-	vector<int> orderedRace03 = GetTruncatedCommonDataSet(3, true), inverselyOrderedRace03 = GetTruncatedCommonDataSet(3, false);
-		
-	//Modo 1: Ordenado
-	Mode01Ordered(3, orderedRace03);
-	
-	//Modo 2: Inversamente ordenado
-	Mode02InverselyOrdered(3, inverselyOrderedRace03);
-	
-	//Modo 3: Aleatorios unicos
-	Mode03UniqueRandom(3);
-	
-	//Modo 4: Aleatorios duplicados
-	Mode04DuplicateRandom(3);
-}
-
 void Races()
 {
-	Race01(); //Carrera por el tablero
-	Race02(); //Carrera por la determinacion de caminos
-	Race03(); //Carrera por el renderizado
+	//Carrera 01: Carrera por el tablero
+	//Carrera 02: Carrera por la determinacion de caminos
+	//Carrera 03: Carrera por el renderizado
+	
+	for(int i = 0; i < races; i++)
+	{
+		//Modo 1: Ordenado
+		Mode01Ordered(i + 1);
+		
+		//Modo 2: Inversamente ordenado
+		Mode02InverselyOrdered(i + 1);
+		
+		//Modo 3: Aleatorios unicos
+		Mode03UniqueRandom(i + 1);
+		
+		//Modo 4: Aleatorios duplicados
+		Mode04DuplicateRandom(i + 1);
+	}
 }
 
 //Funcion de pruebas
