@@ -159,6 +159,9 @@ auto ExecutionTime(int, vector<int>&); //Tiempo de ejecucion del algoritmo
 void RunAlgorithms(int, vector<int>, unordered_map<int, double>*); //Ejecucion de los algoritmos
 void PrintRaceInfo(int, int); //Informacion de las carreras
 void UpdateWinner(int, string*, double*, string, double); //Actualizacion del algoritmo ganador
+string GetAlgorithmNameByIndex(int); //Obtener el nombre de un algoritmo
+vector<string> GetAllWinners(double, unordered_map<int, double>); //Obtener los algoritmos ganadores
+void ShowWinners(vector<string>, double) //Mostrar los ganadores
 void PrintResults(unordered_map<int, double>); //Resultados de las carreras
 void Mode01Ordered(int); //Modo 01: Modo ordenado
 void Mode02InverselyOrdered(int); //Modo 02: Modo inversamente ordenado
@@ -745,6 +748,67 @@ void UpdateWinner(int currentIndex, string* winnerName, double* winnerTime, stri
 	}
 }
 
+//Obtener el nombre de un algoritmo en el map de algoritmos a traves del indice
+string GetAlgorithmNameByIndex(int index)
+{
+	for(const auto& pairAlg : algorithms)
+	{
+		if(index == pairAlg.second)
+		{
+			return pairAlg.first;
+		}
+	}
+	
+	return "NotFound";
+}
+
+//Obtener todos los algoritmos ganadores (en caso de que haya mas de uno que logro el mismo tiempo)
+vector<string> GetAllWinners(double winnerTime, unordered_map<int, double> results)
+{
+	vector<string> winners;
+	
+	for(int i = 0; i < numAlgorithms; i++)
+	{
+		if(results[i + 1] == winnerTime) //El algoritmo actual tiene el mismo tiempo que el ganador
+		{
+			winners.push_back(GetAlgorithmNameByIndex(i + 1)); //Se agrega el nombre del algoritmo al vector de algoritmos ganadores
+		}
+	}
+	
+	return winners;
+}
+
+//Mostrar los algoritmos ganadores y el tiempo de ejecucion
+void ShowWinners(vector<string> winners, double time)
+{
+	if(winners.size() == 1)
+	{
+		cout << "El ganador es: " << winners[0] << " un tiempo de " << time << " segundos" << endl;
+	}
+	else
+	{
+		cout << "Los ganadores son: ";
+		
+		for(int i = 0; i < winners.size(); i++)
+		{
+			if(i == winners.size() - 1) //Ultimo elemento
+			{
+				cout << winners[i];
+			}
+			else if(i == winners.size() - 2) //Penultimo elemento
+			{
+				cout << winners[i] << " y ";
+			}
+			else
+			{
+				cout << winners[i] << ", ";
+			}
+		}
+		
+		cout << ", un tiempo de " << time << " segundos" << endl;
+	}
+}
+
 //Imprimir los resultados obtenidos en las carreras
 void PrintResults(unordered_map<int, double> results)
 {
@@ -753,22 +817,14 @@ void PrintResults(unordered_map<int, double> results)
 	
 	for(int i = 0; i < numAlgorithms; i++) //Se recorre el map y se muestran los datos
 	{
-		string algorithmName;
+		string algorithmName = GetAlgorithmNameByIndex(i + 1);
 		double time = results[i + 1];
-		
-		for(const auto& pairAlg : algorithms)
-		{
-			if(i + 1 == pairAlg.second)
-			{
-				algorithmName = pairAlg.first;
-			}
-		}
 		
 		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
 		UpdateWinner(i, &winnerName, &winnerTime, algorithmName, time);
 	}
 	
-	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
+	ShowWinners(GetAllWinners(winnerTime, results), winnerTime);
 }
 
 //Modo 01: Set de datos ordenados
