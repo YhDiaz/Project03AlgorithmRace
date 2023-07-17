@@ -155,6 +155,8 @@ void HeapSort(vector<int>& set)
 auto ExecutionTime_Ascending(int, vector<int>&); //Tiempo de ejecucion (Orden ascendente)
 auto ExecutionTime_Descending(int, vector<int>&); //Tiempo de ejecucion (Orden descendente)
 auto ExecutionTime(int, vector<int>&); //Tiempo de ejecucion del algoritmo
+void PrintRaceInfo(int, int); //Informacion de las carreras
+void PrintResults(unordered_map<int, double>); //Resultados de las carreras
 void Mode01Ordered(int); //Modo 01: Modo ordenado
 void Mode02InverselyOrdered(int); //Modo 02: Modo inversamente ordenado
 void Mode03UniqueRandom(int); //Modo 03: Modo aleatorios unicos
@@ -607,32 +609,10 @@ auto ExecutionTime(int algorithm, vector<int>& set)
 	}	
 }
 
-//Modo 01: Set de datos ordenados
-void Mode01Ordered(int race)
+//Imprimir informacion de una carrera y modo especificos
+void PrintRaceInfo(int race, int mode)
 {
-	vector<int> set;
-	
-	if(race == 1)
-	{
-		set = ordered;
-	}
-	else
-	{
-		set = GetTruncatedCommonDataSet(race, true);
-	}
-	
-	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
-	
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		auto time_taken = ExecutionTime(i + 1, set);
-		results[i + 1] = time_taken.count(); //Agregar al map
-	}
-	
-	double winnerTime = 0;
-	string winnerName;
-	
-	if(race == 1)
+	if(race == 1) //Carreras
 	{
 		cout << "\nCarrera por el tablero: ";
 	}
@@ -640,15 +620,36 @@ void Mode01Ordered(int race)
 	{
 		cout << "\nCarrera por los caminos entre aldeas: ";
 	}
-	else
+	else if(race == 3)
 	{
 		cout << "\nCarrera por el renderizado de objetos: ";
 	}
 	
-	cout << "Modo ordenado" << endl;
+	if(mode == 1) //Modos
+	{
+		cout << "Modo ordenado" << endl;
+	}
+	else if(mode == 2)
+	{
+		cout << "Modo inversamente ordenado" << endl;
+	}
+	else if(mode == 3)
+	{
+		cout << "Modo aleatorios unicos" << endl;
+	}
+	else if(mode == 4)
+	{
+		cout << "Modo aleatorios duplicados" << endl;
+	}
+}
+
+//Imprimir los resultados obtenidos en las carreras
+void PrintResults(unordered_map<int, double> results)
+{
+	double winnerTime = 0;
+	string winnerName;
 	
-	//Recorrer el map y mostrar los datos
-	for(int i = 0; i < numAlgorithms; i++)
+	for(int i = 0; i < numAlgorithms; i++) //Se recorre el map y se muestran los datos
 	{
 		string algorithmName;
 		double time = results[i + 1];
@@ -678,6 +679,32 @@ void Mode01Ordered(int race)
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
 }
 
+//Modo 01: Set de datos ordenados
+void Mode01Ordered(int race)
+{
+	vector<int> set;
+	
+	if(race == 1)
+	{
+		set = ordered;
+	}
+	else
+	{
+		set = GetTruncatedCommonDataSet(race, true);
+	}
+	
+	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
+	
+	for(int i = 0; i < numAlgorithms; i++)
+	{
+		auto time_taken = ExecutionTime(i + 1, set);
+		results[i + 1] = time_taken.count(); //Agregar al map
+	}
+	
+	PrintRaceInfo(race, 1);
+	PrintResults(results);
+}
+
 //Modo 02: Set de datos inversamente ordenado
 void Mode02InverselyOrdered(int race)
 {
@@ -703,53 +730,8 @@ void Mode02InverselyOrdered(int race)
 		results[i + 1] = time_taken.count(); //Agregar al map
 	}
 	
-	double winnerTime = 0;
-	string winnerName;
-	
-	if(race == 1)
-	{
-		cout << "\nCarrera por el tablero: ";
-	}
-	else if(race == 2)
-	{
-		cout << "\nCarrera por los caminos entre aldeas: ";
-	}
-	else
-	{
-		cout << "\nCarrera por el renderizado de objetos: ";
-	}
-	
-	cout << "Modo inversamente ordenado" << endl;
-	
-	//Recorrer el map y mostrar los datos
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		string algorithmName;
-		double time = results[i + 1];
-		
-		for(const auto& pairAlg : algorithms)
-		{
-			if(i + 1 == pairAlg.second)
-			{
-				algorithmName = pairAlg.first;
-			}
-		}
-		
-		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
-		
-		if(i == 0)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-		else if(winnerTime > time)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-	}
-	
-	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
+	PrintRaceInfo(race, 2);
+	PrintResults(results);
 }
 
 //Modo 03: Set de datos aleatorios unicos
@@ -782,53 +764,8 @@ void Mode03UniqueRandom(int race)
 		results[i + 1] = time_taken.count(); //Agregar al map
 	}
 	
-	double winnerTime = 0;
-	string winnerName;
-	
-	if(race == 1)
-	{
-		cout << "\nCarrera por el tablero: ";
-	}
-	else if(race == 2)
-	{
-		cout << "\nCarrera por los caminos entre aldeas: ";
-	}
-	else
-	{
-		cout << "\nCarrera por el renderizado de objetos: ";
-	}
-	
-	cout << "Modo aleatorios unicos" << endl;
-	
-	//Recorrer el map y mostrar los datos
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		string algorithmName;
-		double time = results[i + 1];
-		
-		for(const auto& pairAlg : algorithms)
-		{
-			if(i + 1 == pairAlg.second)
-			{
-				algorithmName = pairAlg.first;
-			}
-		}
-		
-		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
-		
-		if(i == 0)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-		else if(winnerTime > time)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-	}
-	
-	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
+	PrintRaceInfo(race, 3);
+	PrintResults(results);
 }
 
 //Modo 04: Set de datos aleatorios duplicados
@@ -861,53 +798,8 @@ void Mode04DuplicateRandom(int race)
 		results[i + 1] = time_taken.count(); //Agregar al map
 	}
 	
-	double winnerTime = 0;
-	string winnerName;
-	
-	if(race == 1)
-	{
-		cout << "\nCarrera por el tablero: ";
-	}
-	else if(race == 2)
-	{
-		cout << "\nCarrera por los caminos entre aldeas: ";
-	}
-	else
-	{
-		cout << "\nCarrera por el renderizado de objetos: ";
-	}
-	
-	cout << "Modo aleatorios duplicados" << endl;
-	
-	//Recorrer el map y mostrar los datos
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		string algorithmName;
-		double time = results[i + 1];
-		
-		for(const auto& pairAlg : algorithms)
-		{
-			if(i + 1 == pairAlg.second)
-			{
-				algorithmName = pairAlg.first;
-			}
-		}
-		
-		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
-		
-		if(i == 0)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-		else if(winnerTime > time)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-	}
-	
-	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
+	PrintRaceInfo(race, 4);
+	PrintResults(results);
 }
 
 //Obtencion de los sets de datos comunes (ordenado e inversamente ordenado) truncados para las carreras 2 y 3
