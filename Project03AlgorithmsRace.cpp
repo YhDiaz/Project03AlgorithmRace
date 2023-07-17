@@ -79,6 +79,7 @@ void GenerateRanges(); //Generacion de rangos
 void InitializeAlgorithmsMap(); //Inicializacion del mapa de algoritmos
 int GetMaxRange(); //Obtencion del rango mayor
 void GenerateCommonDataSet(); //Sets de datos comunes
+vector<int> GetTruncatedCommonDataSet(int, bool); //Truncamiento de sets de datos comunes
 vector<int> GenerateUniqueRandomDataSet(int); //Generacion del set de datos aleatorios unicos
 vector<int> GenerateDuplicateRandomDataSet(int); //Generacion del set de datos aleatorios duplicados
 vector<int> GenerateRandomDataSet(); //Sets de datos aleatorios
@@ -155,13 +156,14 @@ void HeapSort(vector<int>& set)
 auto ExecutionTime_Ascending(int, vector<int>&); //Tiempo de ejecucion (Orden ascendente)
 auto ExecutionTime_Descending(int, vector<int>&); //Tiempo de ejecucion (Orden descendente)
 auto ExecutionTime(int, vector<int>&); //Tiempo de ejecucion del algoritmo
+void RunAlgorithms(int, vector<int>, unordered_map<int, double>*); //Ejecucion de los algoritmos
 void PrintRaceInfo(int, int); //Informacion de las carreras
+void UpdateWinner(int, string*, double*, string, double); //Actualizacion del algoritmo ganador
 void PrintResults(unordered_map<int, double>); //Resultados de las carreras
 void Mode01Ordered(int); //Modo 01: Modo ordenado
 void Mode02InverselyOrdered(int); //Modo 02: Modo inversamente ordenado
 void Mode03UniqueRandom(int); //Modo 03: Modo aleatorios unicos
 void Mode04DuplicateRandom(int); //Modo 04: Modo aleatorios duplicados
-vector<int> GetTruncatedCommonDataSet(int, bool); //Truncamiento de sets de datos comunes
 void Races(); //Carreras
 
 int main(int argc, char* argv[])
@@ -278,6 +280,71 @@ void GenerateCommonDataSet()
 	}
 	
 	cout << "\n\tSets de datos comunes generados";
+}
+
+//Obtencion de los sets de datos comunes (ordenado e inversamente ordenado) truncados para las carreras 2 y 3
+vector<int> GetTruncatedCommonDataSet(int race, bool orderedSet)
+{
+	vector<int> orderedAux, inverselyOrderedAux;
+	
+	if(order == 1)
+	{
+		if(orderedSet)
+		{
+			if(race == 2)
+			{
+				orderedAux.assign(ordered.begin(), ordered.begin() + race02Range);
+			}
+			else
+			{
+				orderedAux.assign(ordered.begin(), ordered.begin() + race03Range);
+			}
+			
+			return orderedAux;
+		}
+		else
+		{
+			if(race == 2)
+			{
+				inverselyOrderedAux.assign(inverselyOrdered.end() - race02Range, inverselyOrdered.end());
+			}
+			else
+			{
+				inverselyOrderedAux.assign(inverselyOrdered.end() - race03Range, inverselyOrdered.end());
+			}
+			
+			return inverselyOrderedAux;
+		}
+	}
+	else
+	{
+		if(orderedSet)
+		{
+			if(race == 2)
+			{
+				orderedAux.assign(ordered.end() - race02Range, ordered.end());
+			}
+			else
+			{
+				orderedAux.assign(ordered.end() - race03Range, ordered.end());
+			}
+			
+			return orderedAux;
+		}
+		else
+		{
+			if(race == 2)
+			{
+				inverselyOrderedAux.assign(inverselyOrdered.begin(), inverselyOrdered.begin() + race02Range);
+			}
+			else
+			{
+				inverselyOrderedAux.assign(inverselyOrdered.begin(), inverselyOrdered.begin() + race03Range);
+			}
+			
+			return inverselyOrderedAux;
+		}
+	}
 }
 
 //Generacion del set de datos aleatorios unicos
@@ -609,6 +676,26 @@ auto ExecutionTime(int algorithm, vector<int>& set)
 	}	
 }
 
+//Ejecucion de los algoritmos
+void RunAlgorithms(int mode, vector<int> set, unordered_map<int, double>* results)
+{
+	for(int i = 0; i < numAlgorithms; i++)
+	{
+		if(mode == 1) //En el modo 1 no se requiere una copia del set
+		{
+			auto time_taken = ExecutionTime(i + 1, set);
+			(*results)[i + 1] = time_taken.count(); //Agregar al map
+		}
+		else
+		{
+			vector<int> setCopy;
+			setCopy.assign(set.begin(), set.end());
+			auto time_taken = ExecutionTime(i + 1, set);
+			(*results)[i + 1] = time_taken.count(); //Agregar al map
+		}		
+	}
+}
+
 //Imprimir informacion de una carrera y modo especificos
 void PrintRaceInfo(int race, int mode)
 {
@@ -643,6 +730,21 @@ void PrintRaceInfo(int race, int mode)
 	}
 }
 
+//Actualizacion de los datos del algoritmo ganador
+void UpdateWinner(int currentIndex, string* winnerName, double* winnerTime, string algorithmName, double time)
+{
+	if(currentIndex == 0) //El algoritmo ubicado en la primera posicion comienza siendo el ganador
+	{
+		*winnerName = algorithmName;
+		*winnerTime = time;
+	}
+	else if(*winnerTime > time)
+	{
+		*winnerName = algorithmName;
+		*winnerTime = time;
+	}
+}
+
 //Imprimir los resultados obtenidos en las carreras
 void PrintResults(unordered_map<int, double> results)
 {
@@ -663,17 +765,7 @@ void PrintResults(unordered_map<int, double> results)
 		}
 		
 		cout << i + 1 << ". " << algorithmName << ", " << time << endl;
-		
-		if(i == 0)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
-		else if(winnerTime > time)
-		{
-			winnerName = algorithmName;
-			winnerTime = time;
-		}
+		UpdateWinner(i, &winnerName, &winnerTime, algorithmName, time);
 	}
 	
 	cout << "El ganador es: " << winnerName << " un tiempo de " << winnerTime << " segundos" << endl;
@@ -695,12 +787,7 @@ void Mode01Ordered(int race)
 	
 	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
 	
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		auto time_taken = ExecutionTime(i + 1, set);
-		results[i + 1] = time_taken.count(); //Agregar al map
-	}
-	
+	RunAlgorithms(1, set, &results);	
 	PrintRaceInfo(race, 1);
 	PrintResults(results);
 }
@@ -721,15 +808,7 @@ void Mode02InverselyOrdered(int race)
 	
 	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
 	
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		vector<int> setCopy;
-		setCopy.assign(set.begin(), set.end());
-		
-		auto time_taken = ExecutionTime(i + 1, setCopy);
-		results[i + 1] = time_taken.count(); //Agregar al map
-	}
-	
+	RunAlgorithms(2, set, &results);
 	PrintRaceInfo(race, 2);
 	PrintResults(results);
 }
@@ -755,15 +834,7 @@ void Mode03UniqueRandom(int race)
 	
 	cout << "\n\tSet de datos aleatorios unicos generado";
 	
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		vector<int> setCopy;
-		setCopy.assign(set.begin(), set.end());
-		
-		auto time_taken = ExecutionTime(i + 1, setCopy);
-		results[i + 1] = time_taken.count(); //Agregar al map
-	}
-	
+	RunAlgorithms(3, set, &results);
 	PrintRaceInfo(race, 3);
 	PrintResults(results);
 }
@@ -789,82 +860,9 @@ void Mode04DuplicateRandom(int race)
 	
 	cout << "\n\tSet de datos aleatorios duplicados generado";
 	
-	for(int i = 0; i < numAlgorithms; i++)
-	{
-		vector<int> setCopy;
-		setCopy.assign(set.begin(), set.end());
-		
-		auto time_taken = ExecutionTime(i + 1, setCopy);
-		results[i + 1] = time_taken.count(); //Agregar al map
-	}
-	
+	RunAlgorithms(4, set, &results);
 	PrintRaceInfo(race, 4);
 	PrintResults(results);
-}
-
-//Obtencion de los sets de datos comunes (ordenado e inversamente ordenado) truncados para las carreras 2 y 3
-vector<int> GetTruncatedCommonDataSet(int race, bool orderedSet)
-{
-	vector<int> orderedAux, inverselyOrderedAux;
-	
-	if(order == 1)
-	{
-		if(orderedSet)
-		{
-			if(race == 2)
-			{
-				orderedAux.assign(ordered.begin(), ordered.begin() + race02Range);
-			}
-			else
-			{
-				orderedAux.assign(ordered.begin(), ordered.begin() + race03Range);
-			}
-			
-			return orderedAux;
-		}
-		else
-		{
-			if(race == 2)
-			{
-				inverselyOrderedAux.assign(inverselyOrdered.end() - race02Range, inverselyOrdered.end());
-			}
-			else
-			{
-				inverselyOrderedAux.assign(inverselyOrdered.end() - race03Range, inverselyOrdered.end());
-			}
-			
-			return inverselyOrderedAux;
-		}
-	}
-	else
-	{
-		if(orderedSet)
-		{
-			if(race == 2)
-			{
-				orderedAux.assign(ordered.end() - race02Range, ordered.end());
-			}
-			else
-			{
-				orderedAux.assign(ordered.end() - race03Range, ordered.end());
-			}
-			
-			return orderedAux;
-		}
-		else
-		{
-			if(race == 2)
-			{
-				inverselyOrderedAux.assign(inverselyOrdered.begin(), inverselyOrdered.begin() + race02Range);
-			}
-			else
-			{
-				inverselyOrderedAux.assign(inverselyOrdered.begin(), inverselyOrdered.begin() + race03Range);
-			}
-			
-			return inverselyOrderedAux;
-		}
-	}
 }
 
 void Races()
