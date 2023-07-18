@@ -14,51 +14,6 @@ using std::chrono::high_resolution_clock;
 using std::chrono::duration;
 using std::chrono::duration_cast;
 
-/*
-
-	SETS DE DATOS COMUNES:
-		
-		SET DE DATOS ORDENADO (DIMENSION MAXIMA: DADA POR LA CARRERA TABLERO DE PUNTAJE)
-		SET DE DATOS INVERSAMENTE ORDENADO (DIMENSION MAXIMA: DADA POR LA CARRERA TABLERO DE PUNTAJE)
-
-	CARRERA 1: TABLERO DE PUNTAJE
-		
-		RANGO: 90.000 - 100.000
-		
-		MODO 1: SET DE DATOS ORDENADO (COPIAS: NINGUNA; DIMENSION: DIMENSION MAXIMA)
-		MODO 2: SET DE DATOS INVERSAMENTE ORDENADO (COPIAS: 7; DIMENSION: DIMENSION MAXIMA)
-		
-		GENERACION DE SETS DE DATOS ALEATORIO Y ALEATORIO DUPLICADO (CON LAS MISMAS DIMENSIONES ANTERIORES)
-		
-		MODO 3: SET DE DATOS ALEATORIO (COPIAS: 7)
-		MODO 4: SET DE DATOS ALEATORIO DUPLICADO (COPIAS: 7)
-		
-	CARRERA 2: DETERMINACION DE CAMINO ENTRE ALDEAS
-		
-		RANGO: 50.000 - 70.000
-		
-		MODO 1: SET DE DATOS ORDENADO (COPIAS: NINGUNA; DIMENSION: DIMENSION MAXIMA TRUNCADA)
-		MODO 2: SET DE DATOS INVERSAMENTE ORDENADO (COPIAS: 7; DIMENSION: DIMENSION MAXIMA TRUNCADA)
-		
-		GENERACION DE SETS DE DATOS ALEATORIO Y ALEATORIO DUPLICADO (CON LAS MISMAS DIMENSIONES ANTERIORES)
-		
-		MODO 3: SET DE DATOS ALEATORIO (COPIAS: 7)
-		MODO 4: SET DE DATOS ALEATORIO DUPLICADO (COPIAS: 7)
-		
-	CARRERA 3: RENDERIZADO DE OBJETOS
-	
-		RANGO: (500 - 1000) x15
-		
-		MODO 1: SET DE DATOS ORDENADO (COPIAS: NINGUNA; DIMENSION: DIMENSION MAXIMA TRUNCADA)
-		MODO 2: SET DE DATOS INVERSAMENTE ORDENADO (COPIAS: 7; DIMENSION: DIMENSION MAXIMA TRUNCADA)
-		
-		GENERACION DE SETS DE DATOS ALEATORIO Y ALEATORIO DUPLICADO (CON LAS MISMAS DIMENSIONES ANTERIORES)
-		
-		MODO 3: SET DE DATOS ALEATORIO (COPIAS: 7)
-		MODO 4: SET DE DATOS ALEATORIO DUPLICADO (COPIAS: 7)
-
-*/
-
 int race01Range = 0;
 int race02Range = 0;
 int race03Range = 0;
@@ -89,59 +44,13 @@ void BubbleSort_Ascending(vector<int>&); //Algoritmo 02: Bubble Sort (Orden asce
 void BubbleSort_Descending(vector<int>&); //Algoritmo 02: Bubble Sort (Orden descendente)
 void InsertionSort_Ascending(vector<int>&); //Algoritmo 03: Insertion Sort (Orden ascendente)
 void InsertionSort_Descending(vector<int>&); //Algoritmo 03: Insertion Sort (Orden descendente)
-
 int ShellSort_KnuthGap(int); //Secuencia de Knuth para el algoritmo 04
 void ShellSort_Ascending(vector<int>&); //Algoritmo 04: Shell Sort (Orden ascendente)
 void ShellSort_Descending(vector<int>&); //Algoritmo 04: Shell Sort (Orden descendente)
-
-vector<int> MergeSort_Merge(vector<int> left, vector<int> right)
-{
-	vector<int> merged;
-	
-	while(!left.empty() && !right.empty())
-	{
-		if(left[0] <= right[0])
-		{
-			merged.push_back(left[0]);
-			left.erase(left.begin());
-		}
-		else
-		{
-			merged.push_back(right[0]);
-			right.erase(right.begin());
-		}
-	}
-	
-	for(const auto& val : left)
-	{
-		merged.push_back(val);
-	}
-	
-	for(const auto& val : right)
-	{
-		merged.push_back(val);
-	}
-	
-	return merged;
-}
-
-vector<int> MergeSort(vector<int>& set)
-{
-	if(set.size() <= 1)
-	{
-		return set;
-	}
-	
-	int mid = set.size() / 2;
-	
-	vector<int> leftHalf, rightHalf;
-	leftHalf.assign(set.begin(), set.begin() + mid);
-	rightHalf.assign(set.end() - mid, set.end());	
-	
-	vector<int> left = MergeSort(leftHalf);
-	vector<int> right = MergeSort(rightHalf);
-	return MergeSort_Merge(left, right);
-}
+void MergeSort_MergeAscending(vector<int>&, int, int, int); //Fusion ascendente para el algoritmo 05
+void MergeSort_MergeDescending(vector<int>&, int, int, int); //Fusion descendente para el algoritmo 05
+void MergeSort_Ascending(vector<int>&, int, int); //Algoritmo 05: Merge Sort (Orden ascendente)
+void MergeSort_Descending(vector<int>&, int, int); //Algoritmo 05: Merge Sort (Orden descendente)
 
 void QuickSort(vector<int>& set)
 {
@@ -169,17 +78,20 @@ void Races(); //Carreras
 
 int main(int argc, char* argv[])
 {
+	/*
 	StartMessage();
 	GenerateRanges();
 	InitializeAlgorithmsMap();
 	GenerateCommonDataSet();	
-	/*
+	
 	StartMessage();
 	InitializeAlgorithmsMap();
-	//TestFunction();
+	TestFunction();
 	GenerateCommonDataSet();
 	*/
-	Races();
+	//Races();
+	
+	TestFunction();
 	
 	return 0;
 }
@@ -208,15 +120,15 @@ void GenerateRanges()
 	//FORMULA PARA OBTENCION DE UN VALOR DENTRO DEL RANGO
 	//RANGO: min --- max
 	//FORMULA: rand() % (max - min) + min
-	/*
+	
 	race01Range = rand() % (100000 - 90000) + 90000;
 	race02Range = rand() % (70000 - 50000) + 50000;
 	race03Range = rand() % (7500 - 15000) + 7500;
-	*/
+	/*
 	race01Range = 10000;
 	race02Range = 5000;
 	race03Range = 1000;
-	
+	*/
 	cout << "\n\tRangos:\n\t- Carrera 1: " << race01Range << "\n\t- Carrera 2: " << race02Range << "\n\t- Carrera 3: " << race03Range << endl;
 }
 
@@ -566,6 +478,138 @@ void ShellSort_Descending(vector<int>& set)
 	}
 }
 
+//Mezcla en orden ascendente de las divisiones (Algoritmo 05: Merge Sort)
+void MergeSort_MergeAscending(vector<int>& set, int start, int middle, int end)
+{
+	int i = 0, j = 0, k = 0;
+	int leftHalf = middle - start + 1;
+	int rightHalf = end - middle;
+	
+	vector<int> leftElements(leftHalf);
+	vector<int> rightElements(rightHalf);
+	
+	for(i = 0; i < leftHalf; i++)
+	{
+		leftElements[i] = set[start + i];
+	}
+	
+	for(i = 0; i < rightHalf; i++)
+	{
+		rightElements[i] = set[middle + i + 1];
+	}
+	
+	i = 0;
+	k = start;
+	
+	while(i < leftHalf && j < rightHalf)
+	{
+		if(leftElements[i] < rightElements[j])
+		{
+			set[k] = leftElements[i];
+			i++;
+		}
+		else
+		{
+			set[k] = rightElements[j];
+			j++;
+		}
+		
+		k++;
+	}
+	
+	while(j < rightHalf)
+	{
+		set[k] = rightElements[j];
+		k++;
+		j++;
+	}
+	
+	while(i < leftHalf)
+	{
+		set[k] = leftElements[i];
+		k++;
+		i++;
+	}
+}
+
+//Mezcla en orden descendente de las divisiones (Algoritmo 05: Merge Sort)
+void MergeSort_MergeDescending(vector<int>& set, int start, int middle, int end)
+{
+	int i = 0, j = 0, k = 0;
+	int leftHalf = middle - start + 1;
+	int rightHalf = end - middle;
+	
+	vector<int> leftElements(leftHalf);
+	vector<int> rightElements(rightHalf);
+	
+	for(i = 0; i < leftHalf; i++)
+	{
+		leftElements[i] = set[start + i];
+	}
+	
+	for(i = 0; i < rightHalf; i++)
+	{
+		rightElements[i] = set[middle + i + 1];
+	}
+	
+	i = 0;
+	k = start;
+	
+	while(i < leftHalf && j < rightHalf)
+	{
+		if(leftElements[i] > rightElements[j])
+		{
+			set[k] = leftElements[i];
+			i++;
+		}
+		else
+		{
+			set[k] = rightElements[j];
+			j++;
+		}
+		
+		k++;
+	}
+	
+	while(j < rightHalf)
+	{
+		set[k] = rightElements[j];
+		k++;
+		j++;
+	}
+	
+	while(i < leftHalf)
+	{
+		set[k] = leftElements[i];
+		k++;
+		i++;
+	}
+}
+
+//Algoritmo 05: Merge Sort (Orden ascendente)
+void MergeSort_Ascending(vector<int>& set, int start, int end)
+{
+	if(start < end)
+	{
+		int middle = start + (end - start) / 2;
+		MergeSort_Ascending(set, start, middle);
+		MergeSort_Ascending(set, middle + 1, end);
+		MergeSort_MergeAscending(set, start, middle, end);
+	}
+}
+
+//Algoritmo 05: Merge Sort (Orden descendente)
+void MergeSort_Descending(vector<int>& set, int start, int end)
+{
+	if(start < end)
+	{
+		int middle = start + (end - start) / 2;
+		MergeSort_Descending(set, start, middle);
+		MergeSort_Descending(set, middle + 1, end);		
+		MergeSort_MergeDescending(set, start, middle, end);
+	}
+}
+
 //Tiempo de ejecucion (Orden ascendente)
 auto ExecutionTime_Ascending(int algorithm, vector<int>& set)
 {
@@ -881,6 +925,12 @@ void TestFunction()
 {
 	srand(time(NULL));
 	vector<int> random;
+	
+	//StartMessage();
+	GenerateRanges();
+	InitializeAlgorithmsMap();
+	GenerateCommonDataSet();
+	
 	/*
 	for(int i = 0; i < 20000; i++)
 	{
@@ -894,16 +944,27 @@ void TestFunction()
 		random.push_back(num);
 	}
 	
+	//cout << "\n\tOriginal random set:" << endl;
+	Print(random);
+	
 	cout << "\n\nAlgoritmo...\n\n";
-	//SelectionSort_Ascending(ordered);
-	//SelectionSort_Descending(ordered);
-	//BubbleSort_Ascending(ordered);
-	//BubbleSort_Descending(ordered);
-	//InsertionSort_Ascending(ordered);
-	//InsertionSort_Descending(ordered);
-	//ShellSort(ordered);
-	//mergeSort(ordered, 0, ordered.size());
-	//vector<int> receptor = MergeSort(ordered);
+	//SelectionSort_Ascending(random);
+	//SelectionSort_Descending(random);
+	//BubbleSort_Ascending(random);
+	//BubbleSort_Descending(random);
+	//InsertionSort_Ascending(random);
+	//InsertionSort_Descending(random);
+	//ShellSort_Ascending(random);
+	//ShellSort_Descending(random);
+	
+	//mergeSort(random, 0, ordered.size());
+	auto start = high_resolution_clock::now();
+	MergeSort_Ascending(random, 0, random.size() - 1);
+	auto end = high_resolution_clock::now();
+
+	auto time_taken = duration_cast<duration<double>>(end - start);
+	cout << "\n\tTiempo: " << time_taken.count() << endl;
+	Print(random);
 	
 	/*for(const auto& i : receptor)
 	{
@@ -923,10 +984,6 @@ void TestFunction()
 		}
 	}	
 	*/
-	for(const auto& i : ordered)
-	{
-		cout << i << endl;
-	}
 }
 
 void Print(vector<int> set)
