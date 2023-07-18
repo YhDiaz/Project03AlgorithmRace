@@ -161,12 +161,10 @@ void PrintRaceInfo(int, int); //Informacion de las carreras
 void UpdateWinner(int, string*, double*, string, double); //Actualizacion del algoritmo ganador
 string GetAlgorithmNameByIndex(int); //Obtener el nombre de un algoritmo
 vector<string> GetAllWinners(double, unordered_map<int, double>); //Obtener los algoritmos ganadores
-void ShowWinners(vector<string>, double) //Mostrar los ganadores
+void ShowWinners(vector<string>, double); //Mostrar los ganadores
 void PrintResults(unordered_map<int, double>); //Resultados de las carreras
-void Mode01Ordered(int); //Modo 01: Modo ordenado
-void Mode02InverselyOrdered(int); //Modo 02: Modo inversamente ordenado
-void Mode03UniqueRandom(int); //Modo 03: Modo aleatorios unicos
-void Mode04DuplicateRandom(int); //Modo 04: Modo aleatorios duplicados
+vector<int> GetSetByMode(int, int); //Obtener el set que se utilizara
+void Competition(int, int); //Competicion en cada carrera y modo
 void Races(); //Carreras
 
 int main(int argc, char* argv[])
@@ -827,100 +825,42 @@ void PrintResults(unordered_map<int, double> results)
 	ShowWinners(GetAllWinners(winnerTime, results), winnerTime);
 }
 
-//Modo 01: Set de datos ordenados
-void Mode01Ordered(int race)
+//Obtener el set de datos que se va a trabajar dependiendo del modo
+vector<int> GetSetByMode(int race, int mode)
 {
-	vector<int> set;
-	
-	if(race == 1)
+	if(mode == 1) //Modo 01: Set de datos ordenados
 	{
-		set = ordered;
+		return (race == 1 ? ordered : GetTruncatedCommonDataSet(race, true));
 	}
-	else
+	else if(mode == 2) //Modo 02: Set de datos inversamente ordenado
 	{
-		set = GetTruncatedCommonDataSet(race, true);
+		return (race == 1 ? inverselyOrdered : GetTruncatedCommonDataSet(race, false));
 	}
-	
+	else if(mode == 3) //Modo 03: Set de datos aleatorios unicos
+	{
+		return (race == 1 ? GenerateRandomDataSet(true, race01Range) :
+				race == 2 ? GenerateRandomDataSet(true, race02Range) :
+							GenerateRandomDataSet(true, race03Range));
+	}
+	else //Modo 04: Set de datos aleatorios duplicados
+	{
+		return (race == 1 ? GenerateRandomDataSet(false, race01Range) :
+				race == 2 ? GenerateRandomDataSet(false, race02Range) :
+							GenerateRandomDataSet(false, race03Range));
+	}
+}
+
+//Competicion de los algoritmos en cada carrera y modo correspondiente
+void Competition(int race, int mode)
+{
+	vector<int> set = GetSetByMode(race, mode);	
 	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
-	
-	RunAlgorithms(1, set, &results);	
-	PrintRaceInfo(race, 1);
+	RunAlgorithms(mode, set, &results);
+	PrintRaceInfo(race, mode);
 	PrintResults(results);
 }
 
-//Modo 02: Set de datos inversamente ordenado
-void Mode02InverselyOrdered(int race)
-{
-	vector<int> set;
-	
-	if(race == 1)
-	{
-		set = inverselyOrdered;
-	}
-	else
-	{
-		set = GetTruncatedCommonDataSet(race, false);
-	}
-	
-	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
-	
-	RunAlgorithms(2, set, &results);
-	PrintRaceInfo(race, 2);
-	PrintResults(results);
-}
-
-//Modo 03: Set de datos aleatorios unicos
-void Mode03UniqueRandom(int race)
-{
-	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
-	vector<int> set;
-	
-	if(race == 1)
-	{
-		set = GenerateRandomDataSet(true, race01Range);
-	}
-	else if(race == 2)
-	{
-		set = GenerateRandomDataSet(true, race02Range);
-	}
-	else
-	{
-		set = GenerateRandomDataSet(true, race03Range);
-	}
-	
-	cout << "\n\tSet de datos aleatorios unicos generado";
-	
-	RunAlgorithms(3, set, &results);
-	PrintRaceInfo(race, 3);
-	PrintResults(results);
-}
-
-//Modo 04: Set de datos aleatorios duplicados
-void Mode04DuplicateRandom(int race)
-{
-	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
-	vector<int> set;
-	
-	if(race == 1)
-	{
-		set = GenerateRandomDataSet(false, race01Range);
-	}
-	else if(race == 2)
-	{
-		set = GenerateRandomDataSet(false, race02Range);
-	}
-	else
-	{
-		set = GenerateRandomDataSet(false, race03Range);
-	}
-	
-	cout << "\n\tSet de datos aleatorios duplicados generado";
-	
-	RunAlgorithms(4, set, &results);
-	PrintRaceInfo(race, 4);
-	PrintResults(results);
-}
-
+//Carreras de algoritmos
 void Races()
 {
 	//Carrera 01: Carrera por el tablero
@@ -929,17 +869,10 @@ void Races()
 	
 	for(int i = 0; i < races; i++)
 	{
-		//Modo 1: Ordenado
-		Mode01Ordered(i + 1);
-		
-		//Modo 2: Inversamente ordenado
-		Mode02InverselyOrdered(i + 1);
-		
-		//Modo 3: Aleatorios unicos
-		Mode03UniqueRandom(i + 1);
-		
-		//Modo 4: Aleatorios duplicados
-		Mode04DuplicateRandom(i + 1);
+		for(int j = 0; j < modes; j++)
+		{
+			Competition(i + 1, j + 1);
+		}
 	}
 }
 
