@@ -52,15 +52,164 @@ void MergeSort_MergeDescending(vector<int>&, int, int, int); //Fusion descendent
 void MergeSort_Ascending(vector<int>&, int, int); //Algoritmo 05: Merge Sort (Orden ascendente)
 void MergeSort_Descending(vector<int>&, int, int); //Algoritmo 05: Merge Sort (Orden descendente)
 
-void QuickSort(vector<int>& set)
+// Partición usando el esquema de partición de Lomuto
+//int partition(vector<int>& a, int start, int end)
+//{
+//    // Elija el elemento más a la derecha como un pivote de la array
+//    int pivot = a[end];
+// 
+//    // los elementos menores que el pivote serán empujados a la izquierda de `pIndex`
+//    // elementos más que el pivote serán empujados a la derecha de `pIndex`
+//    // elementos iguales pueden ir en cualquier dirección
+//    int pIndex = start;
+// 
+//    // cada vez que encontramos un elemento menor o igual que el pivote, `pIndex`
+//    // se incrementa, y ese elemento se colocaría antes del pivote.
+//    for (int i = start; i < end; i++)
+//    {
+//        if (a[i] <= pivot)
+//        {
+//            swap(a[i], a[pIndex]);
+//            pIndex++;
+//        }
+//    }
+// 
+//    // intercambiar `pIndex` con pivote
+//    swap (a[pIndex], a[end]);
+// 
+//    // devuelve `pIndex` (índice del elemento pivote)
+//    return pIndex;
+//}
+// 
+//// Rutina de clasificación rápida
+//void quicksort(vector<int>& a, int start, int end)
+//{
+//    // condición base
+//    if (start >= end) {
+//        return;
+//    }
+// 
+//    // reorganizar los elementos a través del pivote
+//    int pivot = partition(a, start, end);
+// 
+//    // recurre en un subarray que contiene elementos que son menores que el pivote
+//    quicksort(a, start, pivot - 1);
+// 
+//    // se repite en el subarray que contiene elementos que son más que el pivote
+//    quicksort(a, pivot + 1, end);
+//}
+
+//int partition(vector<int>& arr, int start, int end)
+//{
+//    int pivot = arr[start];
+//    int count = 0;
+//    
+//    for (int i = start + 1; i <= end; i++) {
+//        if (arr[i] <= pivot)
+//            count++;
+//    }
+// 
+//    // Giving pivot element its correct position
+//    int pivotIndex = start + count;
+//    swap(arr[pivotIndex], arr[start]);
+// 
+//    // Sorting left and right parts of the pivot element
+//    int i = start, j = end;
+// 
+//    while (i < pivotIndex && j > pivotIndex) {
+// 
+//        while (arr[i] <= pivot) {
+//            i++;
+//        }
+// 
+//        while (arr[j] > pivot) {
+//            j--;
+//        }
+// 
+//        if (i < pivotIndex && j > pivotIndex) {
+//            swap(arr[i++], arr[j--]);
+//        }
+//    }
+// 
+//    return pivotIndex;
+//}
+
+void PrintInLine(vector<int> set)
 {
+	cout << endl;
 	
+	for(const auto& i : set)
+	{
+		cout << i << " ";
+	}
 }
 
-void HeapSort(vector<int>& set)
-{
-	
-}
+
+//int QuickSort_Partition(vector<int>& set, int start, int end)
+//{
+//	int pivot = set[start];
+//	int i = start + 1;
+//	
+//	//cout << "\n\tDEBUG Entra al partition; start: " << start << ", end: " << end;
+//	
+//	for(int j = i; j <= end; j++)
+//	{
+//		if(set[j] <= pivot)
+//		{
+//			int temp = set[i];
+//			set[i] = set[j];
+//			set[j] = temp;
+//			i++;
+//		}
+//	}
+//	
+//	int temp = set[start];
+//	set[start] = set[i - 1];
+//	set[i - 1] = temp;
+//	
+//	//cout << "\n\tDEBUG El i es: " << i << endl << endl;
+//	
+//	return i - 1;
+//	
+//	int pivot = end;
+//	int j = start;
+//	
+//	for(int i = start; i < end; i++)
+//	{
+//		if(set[i] < set[pivot])
+//		{
+//			int temp = set[i];
+//			set[i] = set[j];
+//			set[j] = temp; 
+//			j++;
+//		}
+//	}
+//	
+//	int temp = set[j];
+//	set[j] = set[pivot];
+//	set[pivot] = temp;
+//	return j;
+//}
+//
+//void QuickSort(vector<int>& set, int start, int end)
+//{
+//	//cout << "\n\tDEBUG Quick sort; start: " << start << ", end: " << end;
+//	//PrintInLine(set);
+//	
+//	if(start < end)
+//	{
+//		//int pivot = QuickSort_Partition(set, start, end);
+//		int pivot = partition(set, start, end);
+//		QuickSort(set, start, pivot - 1);
+//		QuickSort(set, pivot + 1, end);
+//	}
+//	//Sleep(1000);
+//}
+
+void MaxHeapify(vector<int>&, int, int); //
+void MinHeapify(vector<int>&, int, int); //
+void HeapSort_Ascending(vector<int>&); //
+void HeapSort_Descending(vector<int>&); //
 
 auto ExecutionTime_Ascending(int, vector<int>&); //Tiempo de ejecucion (Orden ascendente)
 auto ExecutionTime_Descending(int, vector<int>&); //Tiempo de ejecucion (Orden descendente)
@@ -78,12 +227,11 @@ void Races(); //Carreras
 
 int main(int argc, char* argv[])
 {
+//	StartMessage();
+//	GenerateRanges();
+//	InitializeAlgorithmsMap();
+//	GenerateCommonDataSet();	
 	/*
-	StartMessage();
-	GenerateRanges();
-	InitializeAlgorithmsMap();
-	GenerateCommonDataSet();	
-	
 	StartMessage();
 	InitializeAlgorithmsMap();
 	TestFunction();
@@ -121,14 +269,14 @@ void GenerateRanges()
 	//RANGO: min --- max
 	//FORMULA: rand() % (max - min) + min
 	
-	race01Range = rand() % (100000 - 90000) + 90000;
-	race02Range = rand() % (70000 - 50000) + 50000;
-	race03Range = rand() % (7500 - 15000) + 7500;
-	/*
-	race01Range = 10000;
-	race02Range = 5000;
-	race03Range = 1000;
-	*/
+//	race01Range = rand() % (100000 - 90000) + 90000;
+//	race02Range = rand() % (70000 - 50000) + 50000;
+//	race03Range = rand() % (15000 - 7500) + 7500;
+	
+	race01Range = 40000;
+	race02Range = 500;
+	race03Range = 100;
+	
 	cout << "\n\tRangos:\n\t- Carrera 1: " << race01Range << "\n\t- Carrera 2: " << race02Range << "\n\t- Carrera 3: " << race03Range << endl;
 }
 
@@ -610,6 +758,97 @@ void MergeSort_Descending(vector<int>& set, int start, int end)
 	}
 }
 
+//QUICKSORT_PARTITION
+//QUICKSORT
+
+void MaxHeapify(vector<int>& set, int size, int current)
+{
+	int largest = current;
+	int left = 2 * current + 1;
+	int right = 2 * current + 2;
+	
+	if(left < size && set[left] > set[largest])
+	{
+		largest = left;
+	}
+	
+	if(right < size && set[right] > set[largest])
+	{
+		largest = right;
+	}
+	
+	if(largest != current)
+	{
+		int temp = set[current];
+		set[current] = set[largest];
+		set[largest] = temp;
+		
+		MaxHeapify(set, size, largest);
+	}
+}
+
+void MinHeapify(vector<int>& set, int size, int current)
+{
+	int smallest = current;
+	int left = 2 * current + 1;
+	int right = 2 * current + 2;
+	
+	if(left < size && set[left] < set[smallest])
+	{
+		smallest = left;
+	}
+	
+	if(right < size && set[right] < set[smallest])
+	{
+		smallest = right;
+	}
+	
+	if(smallest != current)
+	{
+		int temp = set[current];
+		set[current] = set[smallest];
+		set[smallest] = temp;
+		
+		MinHeapify(set, size, smallest);
+	}
+}
+
+void HeapSort_Ascending(vector<int>& set)
+{
+	int size = set.size();
+	
+	for(int i = size / 2 - 1; i >= 0; i--)
+	{
+		MaxHeapify(set, size, i);
+	}
+	
+	for(int i = size - 1; i > 0; i--)
+	{
+		int temp = set[0];
+		set[0] = set[i];
+		set[i] = temp;
+		MaxHeapify(set, i, 0);
+	}
+}
+
+void HeapSort_Descending(vector<int>& set)
+{
+	int size = set.size();
+	
+	for(int i = size / 2 - 1; i >= 0; i--)
+	{
+		MinHeapify(set, size, i);
+	}
+	
+	for(int i = size - 1; i > 0; i--)
+	{
+		int temp = set[0];
+		set[0] = set[i];
+		set[i] = temp;
+		MinHeapify(set, i, 0);
+	}
+}
+
 //Tiempo de ejecucion (Orden ascendente)
 auto ExecutionTime_Ascending(int algorithm, vector<int>& set)
 {
@@ -920,13 +1159,145 @@ void Races()
 	}
 }
 
-//Funcion de pruebas
+
+
+
+
+
+
+
+
+
+
+
+
+int partition(vector<int> arr, int low, int high)
+{
+	int pivot = arr[high];
+	int i = low - 1;
+	
+	for(int j = low; j < high - 1; j++)
+	{
+		if(arr[j] <= pivot)
+		{
+			i++;
+			int temp = arr[i];
+			arr[i] = arr[j];
+			arr[j] = temp;
+		}
+	}
+	
+	int temp = arr[i + 1];
+	arr[i + 1] = arr[high];
+	arr[high] = temp;
+	return i + 1;
+}
+
+void quickSort(vector<int> arr, int low, int high)
+{
+	if(low < high)
+	{
+		int pivot = partition(arr, low, high);
+		quickSort(arr, low, pivot - 1);
+		quickSort(arr, pivot + 1, high);
+	}
+}
+
+//void MaxHeapify(vector<int>& set, int size, int current)
+//{
+//	int largest = current;
+//	int left = 2 * current + 1;
+//	int right = 2 * current + 2;
+//	
+//	if(left < size && set[left] > set[largest])
+//	{
+//		largest = left;
+//	}
+//	
+//	if(right < size && set[right] > set[largest])
+//	{
+//		largest = right;
+//	}
+//	
+//	if(largest != current)
+//	{
+//		int temp = set[current];
+//		set[current] = set[largest];
+//		set[largest] = temp;
+//		
+//		MaxHeapify(set, size, largest);
+//	}
+//}
+//
+//void MinHeapify(vector<int>& set, int size, int current)
+//{
+//	int smallest = current;
+//	int left = 2 * current + 1;
+//	int right = 2 * current + 2;
+//	
+//	if(left < size && set[left] < set[smallest])
+//	{
+//		smallest = left;
+//	}
+//	
+//	if(right < size && set[right] < set[smallest])
+//	{
+//		smallest = right;
+//	}
+//	
+//	if(smallest != current)
+//	{
+//		int temp = set[current];
+//		set[current] = set[smallest];
+//		set[smallest] = temp;
+//		
+//		MinHeapify(set, size, smallest);
+//	}
+//}
+//
+//void HeapSort_Ascending(vector<int>& set)
+//{
+//	int size = set.size();
+//	
+//	for(int i = size / 2 - 1; i >= 0; i--)
+//	{
+//		MaxHeapify(set, size, i);
+//	}
+//	
+//	for(int i = size - 1; i > 0; i--)
+//	{
+//		int temp = set[0];
+//		set[0] = set[i];
+//		set[i] = temp;
+//		MaxHeapify(set, i, 0);
+//	}
+//}
+//
+//void HeapSort_Descending(vector<int>& set)
+//{
+//	int size = set.size();
+//	
+//	for(int i = size / 2 - 1; i >= 0; i--)
+//	{
+//		MinHeapify(set, size, i);
+//	}
+//	
+//	for(int i = size - 1; i > 0; i--)
+//	{
+//		int temp = set[0];
+//		set[0] = set[i];
+//		set[i] = temp;
+//		MinHeapify(set, i, 0);
+//	}
+//}
+
+//Zona de pruebas
 void TestFunction()
 {
 	srand(time(NULL));
 	vector<int> random;
 	
-	//StartMessage();
+	StartMessage();
 	GenerateRanges();
 	InitializeAlgorithmsMap();
 	GenerateCommonDataSet();
@@ -938,14 +1309,15 @@ void TestFunction()
 		ordered.push_back(num);
 	}*/
 	
-	for(int i = 0; i < 20; i++)
+	for(int i = 0; i < 10; i++)
 	{
-		int num = rand() % 20 + 1;
+		int num = rand() % 10 + 1;
 		random.push_back(num);
 	}
 	
 	//cout << "\n\tOriginal random set:" << endl;
-	Print(random);
+	//Print(inverselyOrdered);
+	Print(ordered);
 	
 	cout << "\n\nAlgoritmo...\n\n";
 	//SelectionSort_Ascending(random);
@@ -954,17 +1326,23 @@ void TestFunction()
 	//BubbleSort_Descending(random);
 	//InsertionSort_Ascending(random);
 	//InsertionSort_Descending(random);
-	//ShellSort_Ascending(random);
-	//ShellSort_Descending(random);
+	//ShellSort_Ascending(inverselyOrdered);
+	//ShellSort_Descending(inverselyOrdered);
+	
+	vector<int> aux = { 3, 2, 0, 1, 4, 8, 7, 6, 9, 5 };
 	
 	//mergeSort(random, 0, ordered.size());
 	auto start = high_resolution_clock::now();
-	MergeSort_Ascending(random, 0, random.size() - 1);
+	//MergeSort_Ascending(random, 0, random.size() - 1);
+	//QuickSort(aux, 0, aux.size() - 1);
+	//quickSort(inverselyOrdered, 0, inverselyOrdered.size() - 1);
+	HeapSort_Descending(ordered);
 	auto end = high_resolution_clock::now();
 
 	auto time_taken = duration_cast<duration<double>>(end - start);
 	cout << "\n\tTiempo: " << time_taken.count() << endl;
-	Print(random);
+	Print(ordered);
+//	Print(random);
 	
 	/*for(const auto& i : receptor)
 	{
