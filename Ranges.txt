@@ -1,0 +1,4 @@
+RangoMinimo,RangoMaximo
+90000,100000
+50000,70000
+7500,15000
