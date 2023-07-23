@@ -38,6 +38,9 @@ vector<int> GetTruncatedCommonDataSet(int, bool); //Truncamiento de sets de dato
 vector<int> GenerateUniqueRandomDataSet(int); //Generacion del set de datos aleatorios unicos
 vector<int> GenerateDuplicateRandomDataSet(int); //Generacion del set de datos aleatorios duplicados
 vector<int> GenerateRandomDataSet(); //Sets de datos aleatorios
+vector<int> GenerateOrderedDataSetForQuickSort(int); //Generacion del set de datos ordenado para el algoritmo Quick Sort
+vector<int> GenerateInverselyOrderedDataSetForQuickSort(int); //Generacion del set de datos inversamente ordenado para el algoritmo Quick Sort
+vector<int> GetSetForQuickSort(int, int); //Generacion de sets de datos especiales para el algoritmo Quick Sort
 void SelectionSort_Ascending(vector<int>&); //Algoritmo 01: Selection Sort (Orden ascendente)
 void SelectionSort_Descending(vector<int>&); //Algoritmo 01: Selection Sort (Orden descendente)
 void BubbleSort_Ascending(vector<int>&); //Algoritmo 02: Bubble Sort (Orden ascendente)
@@ -62,7 +65,7 @@ void HeapSort_Descending(vector<int>&); //Algoritmo 07: Heap Sort (Orden descend
 auto ExecutionTime_Ascending(int, vector<int>&); //Tiempo de ejecucion (Orden ascendente)
 auto ExecutionTime_Descending(int, vector<int>&); //Tiempo de ejecucion (Orden descendente)
 auto ExecutionTime(int, vector<int>&); //Tiempo de ejecucion del algoritmo
-void RunAlgorithms(int, vector<int>, unordered_map<int, double>*); //Ejecucion de los algoritmos
+void RunAlgorithms(int, int, vector<int>, unordered_map<int, double>*); //Ejecucion de los algoritmos
 void PrintRaceInfo(int, int); //Informacion de las carreras
 void UpdateWinner(int, string*, double*, string, double); //Actualizacion del algoritmo ganador
 string GetAlgorithmNameByIndex(int); //Obtener el nombre de un algoritmo
@@ -336,6 +339,71 @@ vector<int> GenerateRandomDataSet(bool unique, int range)
 	{
 		return GenerateDuplicateRandomDataSet(range);
 	}	
+}
+
+//Generacion del set de datos ordenado para el algoritmo Quick Sort
+vector<int> GenerateOrderedDataSetForQuickSort(int range)
+{
+	vector<int> set;
+	
+	if(order == 1)
+	{
+		for(int i = 0; i < range; i++)
+		{
+			set.push_back(i);
+		}
+	}
+	else
+	{
+		for(int i = range; i > 0; i--)
+		{
+			set.push_back(i);
+		}
+	}
+	
+	return set;
+}
+
+//Generacion del set de datos inversamente ordenado para el algoritmo Quick Sort
+vector<int> GenerateInverselyOrderedDataSetForQuickSort(int range)
+{
+	vector<int> set;
+	
+	if(order == 1)
+	{
+		for(int i = range; i > 0; i--)
+		{
+			set.push_back(i);
+		}
+	}
+	else
+	{
+		for(int i = 0; i < range; i++)
+		{
+			set.push_back(i);
+		}
+	}
+	
+	return set;
+}
+
+//Generacion de los sets de datos para el algoritmo Quick Sort
+vector<int> GetSetForQuickSort(int race, int mode)
+{
+	int race01 = 30000, race02 = 25000;
+	
+	if(race == 1)
+	{
+		return (mode == 1 ? GenerateOrderedDataSetForQuickSort(race01) :
+				mode == 2 ? GenerateInverselyOrderedDataSetForQuickSort(race01) :
+				mode == 3 ? GenerateRandomDataSet(true, race01) : GenerateRandomDataSet(false, race01));
+	}
+	else
+	{
+		return ((mode == 1) ? GenerateOrderedDataSetForQuickSort(race02) :
+				(mode == 2) ? GenerateInverselyOrderedDataSetForQuickSort(race02) :
+				(mode == 3) ? GenerateRandomDataSet(true, race02) : GenerateRandomDataSet(false, race02));
+	}
 }
 
 //Algoritmo 01: Selection Sort (Orden ascendente)
@@ -937,10 +1005,15 @@ auto ExecutionTime(int algorithm, vector<int>& set)
 }
 
 //Ejecucion de los algoritmos
-void RunAlgorithms(int mode, vector<int> set, unordered_map<int, double>* results)
+void RunAlgorithms(int race, int mode, vector<int> set, unordered_map<int, double>* results)
 {
 	for(int i = 0; i < numAlgorithms; i++)
 	{
+		if(race != 3 && i + 1 == 6) //Sets especiales para el algoritmo Quick Sort en las carreras 1 y 2
+		{
+			set = GetSetForQuickSort(race, mode);
+		}
+		
 		if(mode == 1) //En el modo 1 no se requiere una copia del set
 		{
 			auto time_taken = ExecutionTime(i + 1, set);
@@ -950,7 +1023,7 @@ void RunAlgorithms(int mode, vector<int> set, unordered_map<int, double>* result
 		{
 			vector<int> setCopy;
 			setCopy.assign(set.begin(), set.end());
-			auto time_taken = ExecutionTime(i + 1, set);
+			auto time_taken = ExecutionTime(i + 1, setCopy);
 			(*results)[i + 1] = time_taken.count(); //Agregar al map
 		}		
 	}
@@ -961,32 +1034,32 @@ void PrintRaceInfo(int race, int mode)
 {
 	if(race == 1) //Carreras
 	{
-		cout << "\nCarrera por el tablero: ";
+		cout << "\n\nCarrera por el tablero: ";
 	}
 	else if(race == 2)
 	{
-		cout << "\nCarrera por los caminos entre aldeas: ";
+		cout << "\n\nCarrera por los caminos entre aldeas: ";
 	}
 	else if(race == 3)
 	{
-		cout << "\nCarrera por el renderizado de objetos: ";
+		cout << "\n\nCarrera por el renderizado de objetos: ";
 	}
 	
 	if(mode == 1) //Modos
 	{
-		cout << "Modo ordenado" << endl;
+		cout << "Modo ordenado" << endl << endl;
 	}
 	else if(mode == 2)
 	{
-		cout << "Modo inversamente ordenado" << endl;
+		cout << "Modo inversamente ordenado" << endl << endl;
 	}
 	else if(mode == 3)
 	{
-		cout << "Modo aleatorios unicos" << endl;
+		cout << "Modo aleatorios unicos" << endl << endl;
 	}
 	else if(mode == 4)
 	{
-		cout << "Modo aleatorios duplicados" << endl;
+		cout << "Modo aleatorios duplicados" << endl << endl;
 	}
 }
 
@@ -1040,11 +1113,11 @@ void ShowWinners(vector<string> winners, double time)
 {
 	if(winners.size() == 1)
 	{
-		cout << "El ganador es: " << winners[0] << " un tiempo de " << time << " segundos" << endl;
+		cout << "\nEl ganador es: " << winners[0] << " un tiempo de " << time << " segundos" << endl;
 	}
 	else
 	{
-		cout << "Los ganadores son: ";
+		cout << "\nLos ganadores son: ";
 		
 		for(int i = 0; i < winners.size(); i++)
 		{
@@ -1114,7 +1187,7 @@ void Competition(int race, int mode)
 {
 	vector<int> set = GetSetByMode(race, mode);	
 	unordered_map<int, double> results; //Map: Numero de algoritmo (Key) --- Tiempo de ejecucion (Value)
-	RunAlgorithms(mode, set, &results);
+	RunAlgorithms(race, mode, set, &results);
 	PrintRaceInfo(race, mode);
 	PrintResults(results);
 }
