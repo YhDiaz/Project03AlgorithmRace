@@ -26,8 +26,6 @@ int modes = 4; //Numero de modos
 vector<int> ordered; //Set de datos ordenado
 vector<int> inverselyOrdered; //Set de datos inversamente ordenado
 
-void TestFunction();
-
 void GenerateRanges(int, int, int); //Generacion de rangos
 bool ReadRangesFile(); //Lectura del archivo de rangos
 void StartMessage(); //Eleccion de ordenamiento de datos
@@ -201,8 +199,6 @@ int GetMaxRange()
 //Generacion de sets de datos comunes: Set de datos comunes para todas las carreras
 void GenerateCommonDataSet()
 {
-	cout << "\n\tGenerando sets de datos comunes (ordenado e inversamente ordenado)...";
-	
 	int max = GetMaxRange();
 	
 	if(order == 1) //Generacion de los sets si el orden elegido es ascendente
@@ -221,8 +217,6 @@ void GenerateCommonDataSet()
 			inverselyOrdered.push_back(i + 1);
 		}
 	}
-	
-	cout << "\n\tSets de datos comunes generados";
 }
 
 //Obtencion de los sets de datos comunes (ordenado e inversamente ordenado) truncados para las carreras 2 y 3
@@ -1205,76 +1199,6 @@ void Races()
 		{
 			Competition(i + 1, j + 1);
 		}
-	}
-}
-
-void Print(vector<int> set)
-{
-	for(const auto& val : set)
-	{
-		cout << val << endl;
-	}
-}
-
-//Zona de pruebas
-void TestFunction()
-{
-	srand(time(NULL));
-	vector<int> random;
-	
-	StartMessage();
-//	GenerateRanges();
-	InitializeAlgorithmsMap();
-	GenerateCommonDataSet();
-	
-	/*
-	for(int i = 0; i < 20000; i++)
-	{
-		int num = rand() % 20 + 1;
-		ordered.push_back(num);
-	}*/
-	
-	for(int i = 0; i < 20; i++)
-	{
-		int num = rand() % 20 + 1;
-		random.push_back(num);
-	}
-	
-	//cout << "\n\tOriginal random set:" << endl;
-	//Print(inverselyOrdered);
-	Print(random);
-	
-	cout << "\n\nAlgoritmo...\n\n";
-	//SelectionSort_Ascending(random);
-	//SelectionSort_Descending(random);
-	//BubbleSort_Ascending(random);
-	//BubbleSort_Descending(random);
-	//InsertionSort_Ascending(random);
-	//InsertionSort_Descending(random);
-	//ShellSort_Ascending(inverselyOrdered);
-	//ShellSort_Descending(inverselyOrdered);
-	
-	auto start = high_resolution_clock::now();
-//	MergeSort_Ascending(random, 0, random.size() - 1);
-//	QuickSort(random, 0, random.size() - 1);
-//	QuickSort(inverselyOrdered, 0, inverselyOrdered.size() - 1);
-	QuickSort_Descending(random, 0, random.size() - 1);
-//	HeapSort_Descending(ordered);
-	auto end = high_resolution_clock::now();
-
-	auto time_taken = duration_cast<duration<double>>(end - start);
-	cout << "\n\tTiempo: " << time_taken.count() << endl;
-	Print(random);
-}
-
-void PrintInLine(vector<int> set)
-{
-	cout << endl;
-	cout << '\t';
-	
-	for(const auto& i : set)
-	{
-		cout << i << " ";
 	}
 }
 
