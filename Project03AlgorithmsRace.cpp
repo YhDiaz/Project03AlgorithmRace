@@ -17,7 +17,7 @@ using std::chrono::duration_cast;
 int race01Range = 0;
 int race02Range = 0;
 int race03Range = 0;
-int numAlgorithms = 4/*7*/;
+int numAlgorithms = 7;
 unordered_map<string, int> algorithms;
 int order = 0; //1: Ascendente; 2: Descendente
 int races = 3; //Numero de carreras
@@ -30,8 +30,9 @@ void TestFunction();
 void Print(vector<int>);
 void PrintInLine(vector<int> set);
 
+void GenerateRanges(int, int, int); //Generacion de rangos
+bool ReadRangesFile(); //Lectura del archivo de rangos
 void StartMessage(); //Eleccion de ordenamiento de datos
-void GenerateRanges(); //Generacion de rangos
 void InitializeAlgorithmsMap(); //Inicializacion del mapa de algoritmos
 int GetMaxRange(); //Obtencion del rango mayor
 void GenerateCommonDataSet(); //Sets de datos comunes
@@ -155,15 +156,77 @@ void Races(); //Carreras
 
 int main(int argc, char* argv[])
 {
-//	StartMessage();
-//	GenerateRanges();
-//	InitializeAlgorithmsMap();
-//	GenerateCommonDataSet();
-//	Races();
+	if(ReadRangesFile())
+	{
+		StartMessage();
+//		GenerateRanges();
+		InitializeAlgorithmsMap();
+		GenerateCommonDataSet();
+		Races();
+	}
 	
-	TestFunction();
+//	TestFunction();
 	
 	return 0;
+}
+
+//Generacion de rangos: Se generan los rangos de datos que tendra cada carrera
+void GenerateRanges(int race, int minRange, int maxRange)
+{
+	//FORMULA PARA OBTENCION DE UN VALOR DENTRO DEL RANGO
+	//RANGO: min --- max
+	//FORMULA: rand() % (max - min) + min
+	
+	if(race == 1)
+	{
+		race01Range = rand() % (maxRange - minRange) + minRange;
+	}
+	else if(race == 2)
+	{
+		race02Range = rand() % (maxRange - minRange) + minRange;
+	}
+	else
+	{
+		race03Range = rand() % (maxRange - minRange) + minRange;
+	}
+	
+//	race01Range = 40000;
+//	race02Range = 500;
+//	race03Range = 100;
+}
+
+//Lectura del archivo que contiene los rangos de cada carrera
+bool ReadRangesFile()
+{
+	srand(time(NULL));
+	string filename = "Ranges.txt";
+	ifstream file(filename);
+	
+	if(file.is_open())
+	{
+		string line;
+		getline(file, line); //Omitir la primera linea correspondiente a los encabezados
+		int race = 0;
+		
+		while(getline(file, line))
+		{
+			race++;
+			stringstream ss(line);
+			string minRange, maxRange;
+			
+			getline(ss, minRange, ',');
+			getline(ss, maxRange, ',');
+			GenerateRanges(race, stoi(minRange), stoi(maxRange));
+		}
+		
+		file.close();
+		return true;
+	}
+	else
+	{
+		cout << "\n\tError al intentar abrir el archivo: " << filename << endl;
+		return false; //El archivo no se leyo correctamente
+	}
 }
 
 //Mensaje de inicio: El usuario decide si desea que el orden de los sets de datos sea ascendente o descendente
@@ -179,25 +242,7 @@ void StartMessage()
 			cout << "\n\t* Error *\n" << endl;
 		}
 	}
-	while(order != 1 && order != 2);	
-}
-
-//Generacion de rangos: Se generan los rangos de datos que tendra cada carrera
-void GenerateRanges()
-{
-	srand(time(NULL));
-	
-	//FORMULA PARA OBTENCION DE UN VALOR DENTRO DEL RANGO
-	//RANGO: min --- max
-	//FORMULA: rand() % (max - min) + min
-	
-//	race01Range = rand() % (100000 - 90000) + 90000;
-//	race02Range = rand() % (70000 - 50000) + 50000;
-//	race03Range = rand() % (15000 - 7500) + 7500;
-	
-	race01Range = 40000;
-	race02Range = 500;
-	race03Range = 100;
+	while(order != 1 && order != 2);
 	
 	cout << "\n\tRangos:\n\t- Carrera 1: " << race01Range << "\n\t- Carrera 2: " << race02Range << "\n\t- Carrera 3: " << race03Range << endl;
 }
@@ -1251,7 +1296,7 @@ void TestFunction()
 	vector<int> random;
 	
 	StartMessage();
-	GenerateRanges();
+//	GenerateRanges();
 	InitializeAlgorithmsMap();
 	GenerateCommonDataSet();
 	
