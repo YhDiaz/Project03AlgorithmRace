@@ -167,8 +167,8 @@ void InitializeAlgorithmsMap()
 	algorithms["Bubble Sort"] = 2;
 	algorithms["Insertion Sort"] = 3;
 	algorithms["Shell Sort"] = 4;
-	algorithms["Quick Sort"] = 5;
-	algorithms["Merge Sort"] = 6;
+	algorithms["Merge Sort"] = 5;
+	algorithms["Quick Sort"] = 6;
 	algorithms["Heap Sort"] = 7;
 }
 
