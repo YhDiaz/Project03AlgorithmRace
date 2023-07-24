@@ -44,4 +44,6 @@ Dentro de las características implementadas en el programa se encuentran:
 7. Cálculo del tiempo que tarda cada algoritmo en ordenar un set de datos.
 8. Entrega de los resultados obtenidos por cada algoritmo (en el orden en que se ejecutaron) y obtención de el/los algoritmo/s ganador/es en cada modo de cada carrera.
 
+La información detallada de los algoritmos y los resultados obtenidos está contenida en este [video](https://drive.google.com/file/d/1Vy0OiXqjvItWSoFqjGF0I3O5cQ7ASnCb/view?usp=sharing).
+
 Nota: Por motivos de mal funcionamiento, el algoritmo Quick sort tendrá un rango distinto al resto en las carreras 1 y 2, ya que ocurre un problema de desbordamiento al exceder un determinado límite de elementos en un set.
